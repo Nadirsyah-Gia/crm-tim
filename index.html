@@ -1,148 +1,457 @@
-const CONFIG = {
-  SOC_SOC: { sheet: 'SOC - SOC', statusCell: 'AX1', counterCell: 'BA1' },
-  SOC_LM:  { sheet: 'SOC - LM',  statusCell: 'AW1' },
-  cols: {
-    AJ: 36,
-    AV: 48,
-    BJ: 62,
-    X: 24,
-    AF: 32,
-    AG: 33
-  }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pesisir CRM – Tur Jepang</title>
+<meta name="theme-color" content="#0b1f3a">
+<style>
+:root{--bg:#f3f0e8;--surf:#fdfcf8;--ink:#0b1f3a;--mut:#5a6a82;--line:#ddd8ca;--lag:#13335f;--lagd:#0b1f3a;--sun:#c9a24a;--hib:#b8344f;--ok:#2f7d57;--chip:#ebe6d9;--nav:#0b1f3a;--onlag:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07142a;--surf:#0e2142;--ink:#f1ece0;--mut:#9cabc4;--line:#1f3a66;--lag:#d9b45a;--lagd:#c9a24a;--sun:#d9b45a;--hib:#ef7a93;--ok:#5ec68b;--chip:#162d52;--nav:#050e1e;--onlag:#0b1f3a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#07142a;--surf:#0e2142;--ink:#f1ece0;--mut:#9cabc4;--line:#1f3a66;--lag:#d9b45a;--lagd:#c9a24a;--sun:#d9b45a;--hib:#ef7a93;--ok:#5ec68b;--chip:#162d52;--nav:#050e1e;--onlag:#0b1f3a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Instrument Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--lag);outline-offset:2px}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+nav{background:var(--nav);color:#e6f0f2;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+nav .logo{font:700 20px "Bricolage Grotesque",sans-serif;padding:0 10px 18px;color:#d9b45a}
+nav .logo small{display:block;font:400 12px "Instrument Sans";color:#8fa6ae;margin-top:2px}
+nav button{background:none;border:0;text-align:left;padding:10px 12px;border-radius:8px;color:#b9cdd3;cursor:pointer}
+nav button:hover{background:#17325a}
+nav button[aria-current="page"]{background:var(--sun);color:#10222b;font-weight:600}
+main{padding:28px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.top h1{font-size:28px;border-left:4px solid var(--sun);padding-left:12px}
+.btn{background:var(--lag);color:var(--onlag);border:0;padding:9px 16px;border-radius:8px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--lagd)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--hib);border:1px solid var(--hib)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpi span{color:var(--mut);font-size:13px}
+.kpi b{display:block;font:700 26px "Bricolage Grotesque",sans-serif;margin-top:4px}
+.kpi.main{background:var(--nav);color:#e6f0f2;border-color:var(--nav)}.kpi.main b{color:#d9b45a}.kpi.main span{color:#8fa6ae}
+.two{display:grid;grid-template-columns:3fr 2fr;gap:14px}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel h2{font-size:18px;margin-bottom:14px}
+.bar{display:grid;grid-template-columns:130px 1fr 70px;gap:10px;align-items:center;margin:9px 0;font-size:14px}
+.bar i{display:block;height:12px;border-radius:6px;background:var(--lag)}
+.bar em{font-style:normal;text-align:right;color:var(--mut)}
+.fu{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.fu:first-of-type{border-top:0}
+.fu small{color:var(--mut);display:block}
+.late{color:var(--hib);font-weight:600}
+.board{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;align-items:flex-start}
+.col{flex:0 0 268px;background:var(--chip);border-radius:12px;border-top:3px solid var(--sun);padding:10px}
+.col h3{font-size:15px;padding:4px 6px 10px;display:flex;justify-content:space-between}
+.col h3 small{font:500 12px "Instrument Sans";color:var(--mut)}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:9px}
+.card b{display:block;cursor:pointer}
+.card p{margin:2px 0;color:var(--mut);font-size:13px}
+.card .val{color:var(--ink);font-weight:600;margin-top:6px}
+.card .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:6px}
+.mv{background:var(--chip);border:0;border-radius:6px;width:30px;height:28px;cursor:pointer}
+.mv:disabled{opacity:.3;cursor:default}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--chip)}
+.tag.s3{background:var(--ok);color:#fff}.tag.s4{background:var(--mut);color:var(--surf)}
+.tools{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.tools input,.tools select,dialog input,dialog select,dialog textarea{background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+.tools input{max-width:320px}.tools select{max-width:200px}
+.wrap{overflow-x:auto;background:var(--surf);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px}
+th{color:var(--mut);font-weight:500}
+tbody tr{cursor:pointer}tbody tr:hover{background:var(--chip)}
+.pk{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.pk .panel b{font:700 20px "Bricolage Grotesque",sans-serif;display:block;margin-top:6px}
+.empty{color:var(--mut);padding:14px 0}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surf);color:var(--ink);width:min(560px,94vw);padding:22px}
+dialog::backdrop{background:rgba(8,20,25,.55)}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.g label{font-size:13px;color:var(--mut);display:block}
+.g .f{grid-column:1/-1}
+.acts{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+@media (max-width:760px){
+.app{grid-template-columns:1fr}
+nav{position:sticky;top:0;height:auto;flex-direction:row;overflow-x:auto;padding:10px;z-index:5;gap:4px}
+nav .logo{display:none}nav button{white-space:nowrap}
+main{padding:18px 14px}.two{grid-template-columns:1fr}.g{grid-template-columns:1fr}
+.bar{grid-template-columns:100px 1fr 60px}
+}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .5s}}
+[hidden]{display:none!important}
+.push{margin-top:auto!important}
+nav [data-logout]{color:#e9a4b4}
+#auth{min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--nav)}
+.acard{background:var(--surf);border-radius:16px;padding:28px;width:min(400px,100%);border-top:4px solid var(--sun)}
+.acard h1{font-size:26px}
+.acard label{display:block;margin-top:14px;font-size:13px;color:var(--mut)}
+.acard input{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surf);font-size:16px}
+.pw{position:relative}.pw input{padding-right:104px}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--lag);font-weight:600;cursor:pointer;padding:8px}
+.err{color:var(--hib);font-size:14px;min-height:20px;margin-top:10px}.err.okm{color:var(--ok)}
+.acard .btn{width:100%;margin-top:10px;min-height:46px}
+.lnk{background:none;border:0;color:var(--lag);font-weight:600;cursor:pointer;padding:8px 4px}
+.lo{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:10px;cursor:pointer;margin-bottom:10px}
+.lo input{width:auto;accent-color:var(--lag)}
+.lo:has(input:checked){border-color:var(--sun);box-shadow:0 0 0 2px var(--sun)}
+html{-webkit-text-size-adjust:100%}
+body{overscroll-behavior-y:none}
+button,a,tr,.card b,.fu{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.board{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.col{scroll-snap-align:start}
+@media (max-width:760px){
+input,select,textarea{font-size:16px!important}
+.mv{width:42px;height:40px;font-size:18px}
+.col{flex-basis:84vw}
+.btn{padding:11px 16px;min-height:44px}
+nav{position:fixed;top:auto;bottom:0;left:0;right:0;height:auto;flex-direction:row;justify-content:space-around;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));gap:2px;border-top:1px solid #c9a24a}
+nav button{flex:1;text-align:center;padding:8px 2px;font-size:11.5px;min-height:46px}
+main{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.wrap{border:0;background:none;overflow:visible}
+table{min-width:0;display:block}thead{display:none}tbody{display:block}
+tbody tr{display:flex;flex-wrap:wrap;gap:3px 12px;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+tbody td{border:0;padding:0;font-size:14px;color:var(--mut)}
+tbody td:first-child{flex:1 0 100%;color:var(--ink);font-weight:600;font-size:15px}
+dialog{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0;max-height:92dvh;overflow-y:auto;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+}
+</style>
+</head>
+<body>
+<div id="auth" hidden></div>
+<div class="app" hidden>
+<nav aria-label="Menu utama">
+<div class="logo">Pesisir CRM<small>Khusus tur Jepang</small></div>
+<button data-v="home">Ringkasan</button>
+<button data-v="pipe">Pipeline</button>
+<button data-v="cust">Pelanggan</button>
+<button data-v="pkg">Paket tur</button><button data-v="set" class="push">Pengaturan</button><button data-logout>Keluar</button>
+</nav>
+<main id="main"></main>
+</div>
+
+<dialog id="ldlg"><h2>Pilih bahasa</h2><div style="margin:16px 0 8px"><label class="lo"><input type="radio" name="lg" value="id"><span translate="no">Bahasa Indonesia</span></label><label class="lo"><input type="radio" name="lg" value="en"><span translate="no">English</span></label><label class="lo"><input type="radio" name="lg" value="ja"><span translate="no">日本語</span></label></div><div class="acts" style="justify-content:flex-end"><button type="button" class="btn ghost" id="lc">Batal</button> <button type="button" class="btn" id="ls">Simpan</button></div></dialog>
+<dialog id="dlg">
+<form method="dialog" id="frm" onsubmit="return false">
+<h2 id="dt">Prospek baru</h2>
+<div class="g">
+<div><label for="n">Nama pelanggan</label><input id="n" required></div>
+<div><label for="w">WhatsApp</label><input id="w" inputmode="tel" placeholder="08123456789"></div>
+<div><label for="p">Paket tur Jepang</label><select id="p"></select></div>
+<div><label for="s">Sumber</label><select id="s"></select></div>
+<div><label for="k">Negara asal klien</label><select id="k"></select></div>
+<div><label for="sp">Tour specialist (sales)</label><select id="sp"></select></div>
+<div><label for="x">Jumlah peserta</label><input id="x" type="number" min="1" value="2"></div>
+<div><label for="v">Nilai transaksi (Rp)</label><input id="v" type="number" min="0" placeholder="Otomatis dari paket"></div>
+<div><label for="d">Tanggal berangkat</label><input id="d" type="date"></div>
+<div><label for="f">Tindak lanjut</label><input id="f" type="date"></div>
+<div class="f"><label for="t">Tahap</label><select id="t"></select></div>
+<div class="f"><label for="c">Catatan</label><textarea id="c" rows="3"></textarea></div>
+</div>
+<div class="acts">
+<button type="button" class="btn danger" id="del">Hapus</button>
+<span><button type="button" class="btn ghost" id="cancel">Batal</button> <button type="button" class="btn" id="save">Simpan</button></span>
+</div>
+</form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ===== ISI DUA BARIS INI DARI SUPABASE (Project Settings > API) =====
+const SUPABASE_URL='https://wivitvllhhowbizunecf.supabase.co/rest/v1/';
+const SUPABASE_KEY='sb_publishable_L0-ucVqkstPj2Zijq5U5PA_hXXc_2ZC';
+// ====================================================================
+const PK=[{n:'Jepang: Tokyo–Fuji 5H4M',p:14500000,d:'Shibuya, Hakone, Gunung Fuji'},{n:'Jepang: Kyoto–Osaka 6H5M',p:16800000,d:'Fushimi Inari, Arashiyama, Dotonbori'},{n:'Jepang: Hokkaido Salju 6H5M',p:19500000,d:'Sapporo, Otaru, Niseko'},{n:'Jepang: Sakura 7H6M',p:21000000,d:'Tokyo, Kyoto, hanami musim semi'}];
+const ST=['Prospek baru','Penawaran','Negosiasi','Terkonfirmasi','Selesai'];
+const SRC=['Instagram','WhatsApp','Website','Referral','Travel fair','Korporat'];
+const KEY='pesisir-crm-v3';let lang='id';try{lang=localStorage.getItem('pesisir-lang')||'id'}catch(e){}
+const CT=['Indonesia','Singapura','Malaysia','Australia','Belanda','India','Amerika Serikat','Korea Selatan','Arab Saudi','Lainnya'];
+let SP=[];
+const day=o=>{const d=new Date();d.setDate(d.getDate()+o);return d.toISOString().slice(0,10)};
+const seed=()=>[
+{id:1,n:'Rina Kusuma',w:'081234567801',p:0,s:0,k:0,sp:0,x:2,v:29000000,d:day(40),f:day(1),t:0,c:'Bulan madu, ingin lihat Gunung Fuji.'},
+{id:2,n:'PT Maju Sejahtera',w:'081234567802',p:1,s:5,k:0,sp:2,x:20,v:336000000,d:day(60),f:day(-2),t:2,c:'Perjalanan insentif karyawan, butuh invoice.'},
+{id:7,n:'Sari Lestari',w:'081234567807',p:3,s:4,k:0,sp:0,x:2,v:42000000,d:day(-20),f:'',t:4,c:'Puas, minta kontak untuk perjalanan berikutnya.'},
+{id:9,n:'Tan Wei Ming',w:'+60123456789',p:0,s:2,x:4,v:58000000,k:2,sp:1,d:day(50),f:day(2),t:1,c:'Keluarga dari Kuala Lumpur, berangkat via KLIA.'},
+{id:10,n:'Emily Carter',w:'+61412345678',p:2,s:3,x:2,v:39000000,k:3,sp:1,d:day(75),f:day(4),t:2,c:'Pasangan dari Sydney, ingin ski di Niseko.'},
+{id:11,n:'Aarav Sharma',w:'+919812345678',p:1,s:1,x:6,v:100800000,k:5,sp:3,d:day(55),f:day(-1),t:2,c:'Grup keluarga dari Mumbai, butuh makanan vegetarian.'},
+{id:12,n:'Lim Hui Ling',w:'+6591234567',p:3,s:0,x:2,v:42000000,k:1,sp:2,d:day(160),f:'',t:3,c:'DP sudah dibayar, musim sakura.'},
+{id:13,n:'Park Ji-woo',w:'+821012345678',p:0,s:5,x:8,v:116000000,k:7,sp:0,d:day(85),f:day(6),t:0,c:'Korporat, minta penawaran grup.'},
+{id:14,n:'Jan de Vries',w:'+31612345678',p:1,s:2,x:2,v:33600000,k:4,sp:2,d:day(45),f:'',t:3,c:'Lunas, tiket sudah diterbitkan.'}];
+let D=[],PF=[];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rp=n=>'Rp'+new Intl.NumberFormat('id-ID').format(Math.round(n||0));
+const UN={id:[' jt',' M'],en:[' mn',' bn'],ja:['百万','十億']};const f1=v=>{const s=v.toFixed(1);return lang==='id'?s.replace('.',','):s};const jt=n=>n>=1e9?f1(n/1e9)+UN[lang][1]:n>=1e6?f1(n/1e6)+UN[lang][0]:rp(n);
+const dt=s=>s?new Date(s+'T00:00').toLocaleDateString(({id:'id-ID',en:'en-GB',ja:'ja-JP'})[lang],{day:'numeric',month:'short',year:'numeric'}):'–';
+const today=day(0);
+let view='home',q='',fs='',fp='',qt;
+
+function render(){
+ document.querySelectorAll('nav button').forEach(b=>b.toggleAttribute('aria-current',b.dataset.v===view)||b.removeAttribute('aria-current'));
+ document.querySelectorAll('nav button').forEach(b=>{if(b.dataset.v===view)b.setAttribute('aria-current','page')});
+ const m=$('#main');
+ if(view==='home')m.innerHTML=home();
+ if(view==='pipe')m.innerHTML=pipe();
+ if(view==='cust')m.innerHTML=cust();
+ if(view==='pkg')m.innerHTML=pkg();if(view==='set')m.innerHTML=setv();[m,$('nav'),$('#dlg'),$('#ldlg')].forEach(tr);
+}
+const head=(t,btn=true)=>`<div class="top"><h1>${t}</h1>${btn?'<button class="btn" data-add>Tambah prospek</button>':''}</div>`;
+
+function home(){
+ const act=D.filter(x=>x.t<3),conf=D.filter(x=>x.t>=3);
+ const pv=act.reduce((a,x)=>a+(+x.v||0),0),cv=conf.reduce((a,x)=>a+(+x.v||0),0);
+ const conv=D.length?Math.round(conf.length/D.length*100):0;
+ const by={};D.filter(x=>x.t>=3).forEach(x=>{const k=PK[x.p].n;by[k]=(by[k]||0)+(+x.v||0)});
+ const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]);const mx=rows[0]?rows[0][1]:1;
+ const fu=act.filter(x=>x.f).sort((a,b)=>a.f<b.f?-1:1).slice(0,6);
+ return head('Ringkasan penjualan')+`
+ <div class="kpis">
+ <div class="kpi main"><span>Pendapatan terkonfirmasi</span><b>${jt(cv)}</b></div>
+ <div class="kpi"><span>Nilai pipeline aktif</span><b>${jt(pv)}</b></div>
+ <div class="kpi"><span>Prospek aktif</span><b>${act.length}</b></div>
+ <div class="kpi"><span>Tingkat konversi</span><b>${conv}%</b></div></div>
+ <div class="two">
+ <div class="panel"><h2>Pendapatan per paket</h2>${rows.length?rows.map(([k,v])=>`<div class="bar"><span>${esc(k)}</span><span><i style="width:${Math.max(4,v/mx*100)}%"></i></span><em>${jt(v)}</em></div>`).join(''):'<p class="empty">Belum ada transaksi terkonfirmasi.</p>'}</div>
+ <div class="panel"><h2>Tindak lanjut terdekat</h2>${fu.length?fu.map(x=>`<div class="fu" data-id="${x.id}"><div>${esc(x.n)}<small>${esc(PK[x.p].n)} · ${ST[x.t]}</small></div><span class="${x.f<today?'late':''}">${x.f<today?'Terlambat · ':''}${dt(x.f)}</span></div>`).join(''):'<p class="empty">Tidak ada jadwal tindak lanjut.</p>'}</div>${perf()}${ctry()}
+ </div>`;
+}
+function perf(){return `<div class="panel"><h2>Kinerja tour specialist</h2><div class="wrap" style="border:0"><table style="min-width:420px"><thead><tr><th>Specialist</th><th>Prospek</th><th>Booking</th><th>Pendapatan</th></tr></thead><tbody>${SP.map((n,i)=>{const l=D.filter(x=>x.sp===i),c=l.filter(x=>x.t>=3);return `<tr style="cursor:default"><td>${n}</td><td>${l.length}</td><td>${c.length}</td><td>${jt(c.reduce((a,x)=>a+(+x.v||0),0))}</td></tr>`}).join('')}</tbody></table></div></div>`}
+function ctry(){const c={};D.forEach(x=>c[x.k]=(c[x.k]||0)+1);const r=Object.entries(c).sort((a,b)=>b[1]-a[1]);const m=r.length?r[0][1]:1;return `<div class="panel"><h2>Klien per negara</h2>${r.map(([k,n])=>`<div class="bar"><span>${CT[k]}</span><span><i style="width:${n/m*100}%"></i></span><em>${n}</em></div>`).join('')||'<p class="empty">Belum ada klien.</p>'}</div>`}
+function card(x){
+ const wa='https://wa.me/'+String(x.w||'').replace(/\D/g,'').replace(/^0/,'62');
+ return `<div class="card"><b data-id="${x.id}">${esc(x.n)}</b><p>${esc(PK[x.p].n)} · ${x.x} peserta</p><p>${CT[x.k]} · Specialist: ${SP[x.sp]}</p><p>Berangkat ${dt(x.d)}</p>
+ ${x.f&&x.t<3?`<p class="${x.f<today?'late':''}">Tindak lanjut ${dt(x.f)}</p>`:''}
+ <div class="val">${rp(x.v)}</div>
+ <div class="row"><a href="${wa}" target="_blank" rel="noopener" class="tag">WhatsApp</a>
+ <span><button class="mv" data-mv="-1" data-id="${x.id}" aria-label="Pindah ke tahap sebelumnya" ${x.t===0?'disabled':''}>‹</button> <button class="mv" data-mv="1" data-id="${x.id}" aria-label="Pindah ke tahap berikutnya" ${x.t===4?'disabled':''}>›</button></span></div></div>`;
+}
+function pipe(){
+ return head('Pipeline penjualan')+'<div class="board">'+ST.map((s,i)=>{
+  const l=D.filter(x=>x.t===i);
+  return `<section class="col"><h3>${s}<small>${l.length} · ${jt(l.reduce((a,x)=>a+(+x.v||0),0))}</small></h3>${l.map(card).join('')||'<p class="empty">Kosong</p>'}</section>`}).join('')+'</div>';
+}
+function cust(){
+ const l=D.filter(x=>(!fs||x.t==fs)&&(fp===''||x.sp==fp)&&(x.n+x.w+PK[x.p].n+CT[x.k]+SP[x.sp]).toLowerCase().includes(q.toLowerCase()));
+ return head('Pelanggan')+`<div class="tools"><input id="q" type="search" placeholder="Cari nama, kontak, atau paket" value="${esc(q)}" aria-label="Cari pelanggan"><select id="fs" aria-label="Filter tahap"><option value="">Semua tahap</option>${ST.map((s,i)=>`<option value="${i}" ${fs==i&&fs!==''?'selected':''}>${s}</option>`).join('')}</select><select id="fp" aria-label="Filter specialist"><option value="">Semua specialist</option>${SP.map((s,i)=>`<option value="${i}" ${fp!==''&&fp==i?'selected':''}>${s}</option>`).join('')}</select></div>
+ <div class="wrap"><table><thead><tr><th>Nama</th><th>Negara</th><th>Kontak</th><th>Paket</th><th>Berangkat</th><th>Nilai</th><th>Specialist</th><th>Tahap</th></tr></thead><tbody>
+ ${l.map(x=>`<tr data-id="${x.id}"><td>${esc(x.n)}</td><td>${CT[x.k]}</td><td>${esc(x.w)}</td><td>${esc(PK[x.p].n)}</td><td>${dt(x.d)}</td><td>${rp(x.v)}</td><td>${SP[x.sp]}</td><td><span class="tag ${x.t>=3?'s'+x.t:''}">${ST[x.t]}</span></td></tr>`).join('')||'<tr><td colspan="8" class="empty">Tidak ada pelanggan yang cocok.</td></tr>'}</tbody></table></div>`;
+}
+function pkg(){
+ return head('Paket tur Jepang',false)+'<div class="pk">'+PK.map((k,i)=>{
+  const l=D.filter(x=>x.p===i);
+  return `<div class="panel"><h3>${k.n}</h3><p style="color:var(--mut);margin:4px 0 0">${k.d}</p><b>${rp(k.p)}<small style="font:400 13px 'Instrument Sans';color:var(--mut)"> /orang</small></b><p style="margin:10px 0 0;font-size:13px;color:var(--mut)">${l.length} prospek · ${l.reduce((a,x)=>a+(+x.x||0),0)} peserta</p></div>`}).join('')+'</div>';
+}
+
+/* dialog */
+const dlg=$('#dlg');let eid=null;
+$('#p').innerHTML=PK.map((k,i)=>`<option value="${i}">${k.n}</option>`).join('');
+$('#s').innerHTML=SRC.map((k,i)=>`<option value="${i}">${k}</option>`).join('');
+$('#k').innerHTML=CT.map((k,i)=>`<option value="${i}">${k}</option>`).join('');$('#sp').innerHTML=SP.map((k,i)=>`<option value="${i}">${k}</option>`).join('');$('#t').innerHTML=ST.map((k,i)=>`<option value="${i}">${k}</option>`).join('');
+function open(id){
+ eid=id;const x=D.find(y=>y.id===id)||{n:'',w:'',p:0,s:0,k:0,sp:Math.max(0,PF.findIndex(f=>SES&&f.id===SES.id)),x:2,v:'',d:'',f:'',t:0,c:''};
+ $('#dt').textContent=id?'Ubah data pelanggan':'Prospek baru';
+ $('#del').style.display=id?'':'none';$('#del').textContent='Hapus';delete $('#del').dataset.s;
+ for(const[k,f]of Object.entries({n:'n',w:'w',p:'p',s:'s',k:'k',sp:'sp',x:'x',v:'v',d:'d',f:'f',t:'t',c:'c'}))$('#'+f).value=x[k];
+ tr(dlg);dlg.showModal();
+}
+$('#cancel').onclick=()=>dlg.close();
+$('#save').onclick=()=>{
+ if(!$('#n').value.trim()){$('#n').focus();return}
+ const o={n:$('#n').value.trim(),w:$('#w').value.trim(),p:+$('#p').value,s:+$('#s').value,k:+$('#k').value,sp:+$('#sp').value,x:Math.max(1,+$('#x').value||1),d:$('#d').value,f:$('#f').value,t:+$('#t').value,c:$('#c').value.trim()};
+ o.v=$('#v').value===''?PK[o.p].p*o.x:+$('#v').value;
+ (eid?sb.from('prospek').update(toR(o)).eq('id',eid):sb.from('prospek').insert(toR(o))).then(r=>{if(r.error)return fail(r.error);dlg.close();loadAll()});
 };
+$('#del').onclick=function(){if(this.dataset.s){sb.from('prospek').delete().eq('id',eid).select().then(r=>{if(r.error)return fail(r.error);if(!r.data.length)return fail({message:'Hanya admin yang bisa menghapus data.'});dlg.close();loadAll()})}else{this.dataset.s=1;this.textContent='Tekan lagi untuk hapus';tr(dlg)}};
 
-
-function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('GIA')
-    .addItem('Toggle Auto Assign (SOC-SOC & SOC-LM)', 'toggleGIA')
-    .addItem('Enable AutoRun 1 Minute', 'enableAutoRun1Minute')
-    .addItem('Disable AutoRun', 'disableAutoRun')
-    .addToUi();
+document.addEventListener('click',e=>{
+ const t=e.target;
+ if(t.closest('[data-logout]')){sb.auth.signOut();return}
+const au=t.closest('[data-auth]');if(au){showAuth(au.dataset.auth);return}
+const ey=t.closest('.eye');if(ey){const i=ey.previousElementSibling,h=i.type==='password';i.type=h?'text':'password';ey.textContent=h?'Sembunyikan':'Tampilkan';ey.setAttribute('aria-label',h?'Sembunyikan password':'Tampilkan password');tr(ey.parentElement);return}
+if(t.closest('#lopen')){const r=document.querySelector('input[name=lg][value='+lang+']');if(r)r.checked=true;$('#ldlg').showModal();return}
+const nv=t.closest('nav button');if(nv&&nv.dataset.v){view=nv.dataset.v;render();return}
+ if(t.closest('[data-add]')){open(null);return}
+ const mv=t.closest('[data-mv]');
+ if(mv){const x=D.find(y=>y.id==mv.dataset.id);x.t=Math.min(4,Math.max(0,x.t+ +mv.dataset.mv));render();sb.from('prospek').update({tahap:x.t}).eq('id',x.id).then(r=>{if(r.error){fail(r.error);loadAll()}});return}
+ if(t.closest('a'))return;
+ const r=t.closest('[data-id]');if(r&&!dlg.open)open(+r.dataset.id);
+});
+document.addEventListener('input',e=>{
+ if(e.target.id==='q'){q=e.target.value;clearTimeout(qt);qt=setTimeout(()=>{const t=document.createElement('div');t.innerHTML=cust();$('.wrap').replaceWith(t.querySelector('.wrap'));tr($('.wrap'))},100)}
+});
+document.addEventListener('change',e=>{if(e.target.id==='fs'){fs=e.target.value;render()}if(e.target.id==='fp'){fp=e.target.value;render()}});
+const TS=`Ringkasan penjualan|Sales overview|販売概要
+Ringkasan|Overview|概要
+Pipeline penjualan|Sales pipeline|販売パイプライン
+Pelanggan|Customers|顧客
+Paket tur Jepang|Japan tour packages|日本ツアーパッケージ
+Paket tur|Tour packages|ツアーパッケージ
+Pengaturan|Settings|設定
+Keluar|Log out|ログアウト
+Khusus tur Jepang|Japan tours only|日本ツアー専用
+Tambah prospek|Add lead|リード追加
+Pendapatan terkonfirmasi|Confirmed revenue|確定売上
+Nilai pipeline aktif|Active pipeline value|進行中の案件額
+Prospek aktif|Active leads|進行中のリード
+Tingkat konversi|Conversion rate|成約率
+Pendapatan per paket|Revenue by package|パッケージ別売上
+Belum ada transaksi terkonfirmasi.|No confirmed bookings yet.|確定予約はまだありません。
+Tindak lanjut terdekat|Upcoming follow-ups|直近のフォローアップ
+Tidak ada jadwal tindak lanjut.|No follow-ups scheduled.|フォローアップ予定なし。
+Terlambat|Overdue|期限超過
+Kinerja tour specialist|Tour specialist performance|スペシャリスト実績
+Klien per negara|Clients by country|国別顧客数
+Belum ada klien.|No clients yet.|顧客はまだいません。
+Prospek baru|New lead|新規リード
+Prospek|Leads|リード
+Penawaran|Quotation|見積
+Negosiasi|Negotiation|交渉
+Terkonfirmasi|Confirmed|確定
+Selesai|Completed|完了
+Pendapatan|Revenue|売上
+Booking|Bookings|予約
+Specialist|Specialist|スペシャリスト
+peserta|guests|名
+Berangkat|Departs|出発
+Tindak lanjut|Follow-up|フォローアップ
+Pindah ke tahap sebelumnya|Move to previous stage|前の段階へ
+Pindah ke tahap berikutnya|Move to next stage|次の段階へ
+Cari nama, kontak, atau paket|Search name, contact or package|名前・連絡先・パッケージで検索
+Cari pelanggan|Search customers|顧客を検索
+Filter tahap|Filter by stage|段階で絞り込み
+Semua tahap|All stages|すべての段階
+Filter specialist|Filter by specialist|スペシャリストで絞り込み
+Semua specialist|All specialists|全スペシャリスト
+Nama|Name|名前
+Negara|Country|国
+Kontak|Contact|連絡先
+Paket|Package|パッケージ
+Nilai|Value|金額
+Tahap|Stage|段階
+Tidak ada pelanggan yang cocok.|No matching customers.|該当する顧客はいません。
+Ubah data pelanggan|Edit customer|顧客情報を編集
+Nama pelanggan|Customer name|顧客名
+Sumber|Source|流入元
+Negara asal klien|Client's country|顧客の国
+Tour specialist (sales)|Tour specialist (sales)|ツアースペシャリスト（営業）
+Jumlah peserta|Number of guests|参加人数
+Nilai transaksi (Rp)|Deal value (Rp)|取引額 (Rp)
+Otomatis dari paket|Auto from package|パッケージから自動
+Tanggal berangkat|Departure date|出発日
+Catatan|Notes|メモ
+Hapus|Delete|削除
+Tekan lagi untuk hapus|Press again to delete|もう一度押すと削除
+Batal|Cancel|キャンセル
+Simpan|Save|保存
+Pilih bahasa|Choose language|言語を選択
+Bahasa|Language|言語
+Akun|Account|アカウント
+Referral|Referral|紹介
+Korporat|Corporate|法人
+Travel fair|Travel fair|旅行フェア
+Indonesia|Indonesia|インドネシア
+Singapura|Singapore|シンガポール
+Malaysia|Malaysia|マレーシア
+Australia|Australia|オーストラリア
+Belanda|Netherlands|オランダ
+India|India|インド
+Amerika Serikat|United States|アメリカ
+Korea Selatan|South Korea|韓国
+Arab Saudi|Saudi Arabia|サウジアラビア
+Lainnya|Other|その他
+Jepang: Tokyo–Fuji 5H4M|Japan: Tokyo–Fuji 5D4N|日本：東京・富士 4泊5日
+Jepang: Kyoto–Osaka 6H5M|Japan: Kyoto–Osaka 6D5N|日本：京都・大阪 5泊6日
+Jepang: Hokkaido Salju 6H5M|Japan: Hokkaido Snow 6D5N|日本：北海道の雪 5泊6日
+Jepang: Sakura 7H6M|Japan: Sakura 7D6N|日本：桜 6泊7日
+Masuk ke CRM|Log in to CRM|CRMにログイン
+Buat akun baru|Create a new account|新規アカウント作成
+Nama lengkap|Full name|氏名
+ID (email)|ID (email)|ID（メール）
+Email|Email|メール
+Password|Password|パスワード
+Konfirmasi password|Confirm password|パスワード（確認）
+Tampilkan password|Show password|パスワードを表示
+Sembunyikan password|Hide password|パスワードを非表示
+Tampilkan|Show|表示
+Sembunyikan|Hide|非表示
+Masuk|Log in|ログイン
+Daftar|Sign up|新規登録
+Belum punya akun?|No account yet?|アカウントをお持ちでない方
+Sudah punya akun?|Already have an account?|アカウントをお持ちの方
+Kode undangan tim|Team invite code|チーム招待コード
+Kode undangan salah.|Invalid invite code.|招待コードが正しくありません。
+Isi semua kolom.|Please fill in all fields.|すべての項目を入力してください。
+Format email tidak valid.|Invalid email format.|メールの形式が正しくありません。
+Password minimal 6 karakter.|Password must be at least 6 characters.|パスワードは6文字以上にしてください。
+Konfirmasi password tidak sama.|Passwords do not match.|パスワードが一致しません。
+Email sudah terdaftar.|Email is already registered.|このメールは登録済みです。
+ID atau password salah.|Wrong ID or password.|IDまたはパスワードが違います。
+Akun berhasil dibuat. Silakan masuk dengan email Anda.|Account created. Please log in with your email.|アカウントを作成しました。メールでログインしてください。`;
+const TX={};TS.split('\n').forEach(l=>{const p=l.split('|');TX[p[0]]=[p[1],p[2]]});
+const RX=new RegExp(Object.keys(TX).sort((a,b)=>b.length-a.length).map(k=>k.replace(/\W/g,c=>'\\'+c)).join('|'),'g');
+const cv=(s,L)=>s.replace(RX,m=>TX[m][L==='en'?0:1]);
+function tr(root){if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
+while(n=w.nextNode()){const p=n.parentElement;if(!p||/^(SCRIPT|STYLE)$/.test(p.tagName)||p.closest('[translate=no]'))continue;const o=n.__o??=n.nodeValue;n.nodeValue=lang==='id'?o:cv(o,lang)}
+root.querySelectorAll('[placeholder],[aria-label]').forEach(el=>{for(const a of ['placeholder','aria-label']){const v=el.getAttribute(a);if(v==null)continue;const o=el['_'+a],s=o&&v===o[1]?o[0]:v,x=lang==='id'?s:cv(s,lang);el.setAttribute(a,x);el['_'+a]=[s,x]}})}
+const LN={id:'Bahasa Indonesia',en:'English',ja:'日本語'};
+function setv(){return head('Pengaturan',false)+`<div class='panel' style='max-width:520px'><h2>Akun</h2><b>${esc(SES.nama)}</b><div style='color:var(--mut)'>${esc(SES.email)}</div></div><div class='panel' style='max-width:520px;margin-top:14px'><h2>Bahasa</h2><button class='btn ghost' id='lopen' style='width:100%;display:flex;justify-content:space-between'><span translate='no'>${LN[lang]}</span><span aria-hidden='true'>›</span></button></div><div style='margin-top:14px'><button class='btn danger' data-logout>Keluar</button></div>`}
+$('#lc').onclick=()=>$('#ldlg').close();
+$('#ls').onclick=()=>{const v=document.querySelector('input[name=lg]:checked');if(v){lang=v.value;try{localStorage.setItem('pesisir-lang',lang)}catch(e){}}$('#ldlg').close();document.documentElement.lang=lang;render()};
+const US=()=>{try{return JSON.parse(localStorage.getItem('pesisir-users')||'[]')}catch(e){return[]}};
+const sUS=a=>{try{localStorage.setItem('pesisir-users',JSON.stringify(a))}catch(e){}};
+const hs=async(s,p)=>{try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(unescape(encodeURIComponent(s+p)))}};
+const INV='JEPANG2026';let SES=null;
+function showAuth(mode,msg,em){const su=mode==='up';
+$('#auth').innerHTML=`<div class='acard'><h1>Pesisir CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Buat akun baru':'Masuk ke CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Nama lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Tampilkan password'>Tampilkan</button></div>${su?`<label for='ac'>Konfirmasi password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Kode undangan tim</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Daftar':'Masuk'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Sudah punya akun?':'Belum punya akun?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Masuk':'Daftar'}</button></p></div>`;tr($('#auth'))}
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const fail=e=>{console.error(e);const b=document.createElement('div');b.style.cssText='position:fixed;left:12px;right:12px;bottom:84px;background:#b8344f;color:#fff;padding:12px;border-radius:10px;z-index:99';b.textContent=e.message;document.body.append(b);setTimeout(()=>b.remove(),6000)};
+const toD=r=>({id:r.id,n:r.nama,w:r.whatsapp||'',p:r.paket,s:r.sumber??0,k:r.negara??0,sp:Math.max(0,PF.findIndex(f=>f.id===r.specialist)),x:r.peserta,v:r.nilai,d:r.berangkat||'',f:r.tindak_lanjut||'',t:r.tahap,c:r.catatan||''});
+const toR=o=>({nama:o.n,whatsapp:o.w,paket:o.p,sumber:o.s,negara:o.k,peserta:o.x,nilai:o.v,berangkat:o.d||null,tindak_lanjut:o.f||null,tahap:o.t,catatan:o.c,specialist:PF[o.sp]?PF[o.sp].id:SES.id});
+async function loadAll(){
+ const a=await sb.from('profiles').select('id,nama').order('nama');if(a.error)return fail(a.error);
+ PF=a.data;SP=PF.map(f=>f.nama);
+ $('#sp').innerHTML=SP.map((k,i)=>`<option value="${i}">${esc(k)}</option>`).join('');
+ const b=await sb.from('prospek').select('*').order('dibuat',{ascending:false});if(b.error)return fail(b.error);
+ D=b.data.map(toD);render();
 }
-
-
-function toggleGIA() {
-  const ss = SpreadsheetApp.getActive();
-  const socSoc = ss.getSheetByName(CONFIG.SOC_SOC.sheet);
-  const socLm = ss.getSheetByName(CONFIG.SOC_LM.sheet);
-
-  const state = socSoc.getRange(CONFIG.SOC_SOC.statusCell).getValue() === 'ON' ? 'OFF' : 'ON';
-  socSoc.getRange(CONFIG.SOC_SOC.statusCell).setValue(state);
-  socLm.getRange(CONFIG.SOC_LM.statusCell).setValue(state);
-
-  if (state === 'ON' && !socSoc.getRange(CONFIG.SOC_SOC.counterCell).getValue()) {
-    socSoc.getRange(CONFIG.SOC_SOC.counterCell).setValue(0); 
+let holdAuth=false,live=false;
+document.addEventListener('submit',async e=>{
+ if(e.target.id!=='af')return;e.preventDefault();
+ const su=!!$('#an'),em=$('#ae').value.trim().toLowerCase(),p=$('#ap').value,err=t=>{const x=$('#aerr');x.className='err';x.textContent=t;tr(x)};
+ if(!em||!p||(su&&(!$('#an').value.trim()||!$('#ak').value.trim())))return err('Isi semua kolom.');
+ if(!/^\S+@\S+\.\S+$/.test(em))return err('Format email tidak valid.');
+ const btn=e.target.querySelector('[type=submit]');btn.disabled=true;
+ try{
+  if(su){
+   if(p.length<6)return err('Password minimal 6 karakter.');
+   if(p!==$('#ac').value)return err('Konfirmasi password tidak sama.');
+   holdAuth=true;
+   const r=await sb.auth.signUp({email:em,password:p,options:{data:{nama:$('#an').value.trim(),kode:$('#ak').value.trim()}}});
+   if(r.error){holdAuth=false;const m=r.error.message||'';return err(/already|registered/i.test(m)?'Email sudah terdaftar.':/database error|kode/i.test(m)?'Kode undangan salah.':m)}
+   await sb.auth.signOut();holdAuth=false;
+   showAuth('in','Akun berhasil dibuat. Silakan masuk dengan email Anda.',em);
+  }else{
+   const r=await sb.auth.signInWithPassword({email:em,password:p});
+   if(r.error)return err('ID atau password salah.');
   }
+ }finally{btn.disabled=false}
+});
+async function boot(){
+ document.documentElement.lang=lang;
+ const g=await sb.auth.getSession(),u=g.data.session&&g.data.session.user;
+ if(!u){SES=null;D=[];$('#auth').hidden=false;document.querySelector('.app').hidden=true;showAuth('in');return}
+ const pr=await sb.from('profiles').select('nama,role').eq('id',u.id).maybeSingle();
+ SES={id:u.id,email:u.email,nama:(pr.data&&pr.data.nama)||u.email,role:pr.data&&pr.data.role};
+ $('#auth').hidden=true;document.querySelector('.app').hidden=false;view='home';render();loadAll();
+ if(!live){live=true;sb.channel('prospek-live').on('postgres_changes',{event:'*',schema:'public',table:'prospek'},()=>{if(SES)loadAll()}).subscribe()}
 }
-
-
-function onEdit(e) {
-  masterAuto();
-}
-
-
-function masterAuto() {
-  autoAssign(CONFIG.SOC_SOC.sheet);
-  autoAssign(CONFIG.SOC_LM.sheet);
-}
-
-
-function autoAssign(sheetName) {
-  const ss = SpreadsheetApp.getActive();
-  const sh = ss.getSheetByName(sheetName);
-
-  const statusCell =
-    sheetName === CONFIG.SOC_SOC.sheet ? CONFIG.SOC_SOC.statusCell : CONFIG.SOC_LM.statusCell;
-
-  if (sh.getRange(statusCell).getValue() !== 'ON') return;
-
-  const lastRow = sh.getLastRow();
-  if (lastRow < 2) return;
-
-  const data = sh.getRange(2, 1, lastRow - 1, 65).getValues();
-
-  for (let i = 0; i < data.length; i++) {
-    const vAJ = data[i][CONFIG.cols.AJ - 1];
-    const vAV = data[i][CONFIG.cols.AV - 1];
-    const vBJ = data[i][CONFIG.cols.BJ - 1];
-    const vPIC = data[i][CONFIG.cols.X - 1];
-
-    if (vPIC) continue;
-    if (vAJ !== 'Assign Ticket') continue;
-
-    let assignee = '';
-    let email = '';
-
-    
-   
-    if (sheetName === CONFIG.SOC_SOC.sheet) {
-
-      if ((vAV === 'Jabo & Banten' || vAV === 'Sumatera & Gateway (CGK-KOS)') && vBJ === '') {
-        assignee = 'Gerry Astomo Kusuma Wibakti';
-        email = 'nadirsyah.gia@spxexpress.com';
-      }
-
-      if (vAV === 'Sumatera & Gateway (CGK-KOS)' && vBJ === 'Admin 1') {
-        assignee = 'Rahman Isya Nur Muhammad';
-        email = 'nadirsyah.gia@spxexpress.com';
-      }
-
-      if (vAV === 'Sumatera & Gateway (CGK-KOS)' && vBJ === 'Admin 2') {
-        assignee = 'Chalifah Salahudin';
-        email = 'nadirsyah.gia@spxexpress.com';
-      }
-
-      
-      if (vAV === 'Jawa, Balnus & Kalsulmalpap' && vBJ === '') {
-        assignee = 'Ahmad Hidayat';
-        email = 'nadirsyah.gia@spxexpress.com';
-      }
-    }
-
-
-    
-    if (sheetName === CONFIG.SOC_LM.sheet) {
-
-      if (vAV === 'Jabo & Banten') {
-        assignee = 'Gerry Astomo Kusuma Wibakti';
-        email = 'nadirsyah.gia@spxexpress.com';
-      }
-
-      if (vAV === 'Sumatera & Gateway (CGK-KOS)') {
-        assignee = 'Ahmad Hidayat';
-        email = 'nadirsyah.gia@spxexpress.com';
-      }
-
-      if (vAV === 'Jawa, Balnus & Kalsulmalpap') {
-        assignee = 'Ahmad Hidayat';
-        email = 'nadirsyah.gia@spxexpress.com';
-      }
-    }
-
-
-    
-    if (!assignee) continue;
-
-    
-    sh.getRange(i + 2, CONFIG.cols.X).setValue(assignee);
-    sh.getRange(i + 2, CONFIG.cols.AF).setValue('Open');
-    sh.getRange(i + 2, CONFIG.cols.AG).setValue(email);
-  }
-}
-
-
-
-function enableAutoRun1Minute() {
-  ScriptApp.getProjectTriggers().forEach(t => {
-    if (t.getHandlerFunction() === 'masterAuto') ScriptApp.deleteTrigger(t);
-  });
-  ScriptApp.newTrigger('masterAuto').timeBased().everyMinutes(1).create();
-}
-
-
-function disableAutoRun() {
-  ScriptApp.getProjectTriggers().forEach(t => {
-    if (t.getHandlerFunction() === 'masterAuto') ScriptApp.deleteTrigger(t);
-  });
-}
+sb.auth.onAuthStateChange(ev=>{if(holdAuth)return;if(ev==='SIGNED_IN'&&SES)return;if(ev==='SIGNED_IN'||ev==='SIGNED_OUT')boot()});
+boot();
+</script>
+</body>
+</html>
