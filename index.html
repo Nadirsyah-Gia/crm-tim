@@ -146,10 +146,10 @@ dialog{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0;m
 <div><label for="k">Negara asal klien</label><select id="k"></select></div>
 <div><label for="sp">Tour specialist (sales)</label><select id="sp"></select></div>
 <div><label for="x">Jumlah participant</label><input id="x" type="number" min="1" value="2"></div>
-<div><label for="v">Nilai transaksi (Rp)</label><input id="v" type="number" min="0" placeholder="Otomatis dari paket"></div>
-<div><label for="d">Tanggal berangkat</label><input id="d" type="date"></div>
+<div><label for="v">Nilai transaksi (Rp)</label><input id="v" type="number" min="0" placeholder="Otomatis dari Package"></div>
+<div><label for="d">Tanggal Departure</label><input id="d" type="date"></div>
 <div><label for="f">Tindak lanjut</label><input id="f" type="date"></div>
-<div class="f"><label for="t">Tahap</label><select id="t"></select></div>
+<div class="f"><label for="t">Step</label><select id="t"></select></div>
 <div class="f"><label for="c">Catatan</label><textarea id="c" rows="3"></textarea></div>
 </div>
 <div class="acts">
@@ -176,7 +176,7 @@ const seed=()=>[
 {id:1,n:'Rina Kusuma',w:'081234567801',p:0,s:0,k:0,sp:0,x:2,v:29000000,d:day(40),f:day(1),t:0,c:'Bulan madu, ingin lihat Mount Fuji.'},
 {id:2,n:'PT Maju Sejahtera',w:'081234567802',p:1,s:5,k:0,sp:2,x:20,v:336000000,d:day(60),f:day(-2),t:2,c:'Perjalanan insentif karyawan, butuh invoice.'},
 {id:7,n:'Sari Lestari',w:'081234567807',p:3,s:4,k:0,sp:0,x:2,v:42000000,d:day(-20),f:'',t:4,c:'Puas, minta kontak untuk perjalanan berikutnya.'},
-{id:9,n:'Tan Wei Ming',w:'+60123456789',p:0,s:2,x:4,v:58000000,k:2,sp:1,d:day(50),f:day(2),t:1,c:'Keluarga dari Kuala Lumpur, berangkat via KLIA.'},
+{id:9,n:'Tan Wei Ming',w:'+60123456789',p:0,s:2,x:4,v:58000000,k:2,sp:1,d:day(50),f:day(2),t:1,c:'Keluarga dari Kuala Lumpur, Departure via KLIA.'},
 {id:10,n:'Emily Carter',w:'+61412345678',p:2,s:3,x:2,v:39000000,k:3,sp:1,d:day(75),f:day(4),t:2,c:'Pasangan dari Sydney, ingin ski di Niseko.'},
 {id:11,n:'Aarav Sharma',w:'+919812345678',p:1,s:1,x:6,v:100800000,k:5,sp:3,d:day(55),f:day(-1),t:2,c:'Grup keluarga dari Mumbai, butuh makanan vegetarian.'},
 {id:12,n:'Lim Hui Ling',w:'+6591234567',p:3,s:0,x:2,v:42000000,k:1,sp:2,d:day(160),f:'',t:3,c:'DP sudah dibayar, musim sakura.'},
@@ -237,21 +237,21 @@ function perf(){
 function ctry(){const c={};D.forEach(x=>c[x.k]=(c[x.k]||0)+1);const r=Object.entries(c).sort((a,b)=>b[1]-a[1]);const m=r.length?r[0][1]:1;return `<div class="panel"><h2>Clients By Country</h2>${r.map(([k,n])=>`<div class="bar"><span>${CT[k]}</span><span><i style="width:${n/m*100}%"></i></span><em>${n}</em></div>`).join('')||'<p class="empty">Belum ada klien.</p>'}</div>`}
 function card(x){
  const wa='https://wa.me/'+String(x.w||'').replace(/\D/g,'').replace(/^0/,'62');
- return `<div class="card"><b data-id="${x.id}">${esc(x.n)}</b><p>${esc(PK[x.p].n)} · ${x.x} participant</p><p>${CT[x.k]} · Specialist: ${SP[x.sp]}</p><p>Berangkat ${dt(x.d)}</p>
+ return `<div class="card"><b data-id="${x.id}">${esc(x.n)}</b><p>${esc(PK[x.p].n)} · ${x.x} participant</p><p>${CT[x.k]} · Specialist: ${SP[x.sp]}</p><p>Departure ${dt(x.d)}</p>
  ${x.f&&x.t<3?`<p class="${x.f<today?'late':''}">Tindak lanjut ${dt(x.f)}</p>`:''}
  <div class="val">${rp(x.v)}</div>
  <div class="row"><a href="${wa}" target="_blank" rel="noopener" class="tag">WhatsApp</a>
- <span><button class="mv" data-mv="-1" data-id="${x.id}" aria-label="Pindah ke tahap sebelumnya" ${x.t===0?'disabled':''}>‹</button> <button class="mv" data-mv="1" data-id="${x.id}" aria-label="Pindah ke tahap berikutnya" ${x.t===4?'disabled':''}>›</button></span></div></div>`;
+ <span><button class="mv" data-mv="-1" data-id="${x.id}" aria-label="Pindah ke Step sebelumnya" ${x.t===0?'disabled':''}>‹</button> <button class="mv" data-mv="1" data-id="${x.id}" aria-label="Pindah ke Step berikutnya" ${x.t===4?'disabled':''}>›</button></span></div></div>`;
 }
 function pipe(){
- return head('Pipeline penjualan')+'<div class="board">'+ST.map((s,i)=>{
+ return head('Pipeline')+'<div class="board">'+ST.map((s,i)=>{
   const l=D.filter(x=>x.t===i);
   return `<section class="col"><h3>${s}<small>${l.length} · ${jt(l.reduce((a,x)=>a+(+x.v||0),0))}</small></h3>${l.map(card).join('')||'<p class="empty">Vacant</p>'}</section>`}).join('')+'</div>';
 }
 function cust(){
  const l=D.filter(x=>(!fs||x.t==fs)&&(fp===''||x.sp==fp)&&(x.n+x.w+PK[x.p].n+CT[x.k]+SP[x.sp]).toLowerCase().includes(q.toLowerCase()));
- return head('Customers')+`<div class="tools"><input id="q" type="search" placeholder="Cari nama, kontak, atau paket" value="${esc(q)}" aria-label="Cari Customers"><select id="fs" aria-label="Filter tahap"><option value="">All Phase</option>${ST.map((s,i)=>`<option value="${i}" ${fs==i&&fs!==''?'selected':''}>${s}</option>`).join('')}</select><select id="fp" aria-label="Filter specialist"><option value="">Semua specialist</option>${SP.map((s,i)=>`<option value="${i}" ${fp!==''&&fp==i?'selected':''}>${s}</option>`).join('')}</select></div>
- <div class="wrap"><table><thead><tr><th>Nama</th><th>Negara</th><th>Kontak</th><th>Paket</th><th>Berangkat</th><th>Nilai</th><th>Specialist</th><th>Tahap</th></tr></thead><tbody>
+ return head('Customers')+`<div class="tools"><input id="q" type="search" placeholder="search name, contact, or package" value="${esc(q)}" aria-label="Cari Customers"><select id="fs" aria-label="Filter Step"><option value="">All Phase</option>${ST.map((s,i)=>`<option value="${i}" ${fs==i&&fs!==''?'selected':''}>${s}</option>`).join('')}</select><select id="fp" aria-label="Filter specialist"><option value="">All Specialist</option>${SP.map((s,i)=>`<option value="${i}" ${fp!==''&&fp==i?'selected':''}>${s}</option>`).join('')}</select></div>
+ <div class="wrap"><table><thead><tr><th>Nama</th><th>Negara</th><th>Kontak</th><th>Package</th><th>Departure</th><th>Nilai</th><th>Specialist</th><th>Step</th></tr></thead><tbody>
  ${l.map(x=>`<tr data-id="${x.id}"><td>${esc(x.n)}</td><td>${CT[x.k]}</td><td>${esc(x.w)}</td><td>${esc(PK[x.p].n)}</td><td>${dt(x.d)}</td><td>${rp(x.v)}</td><td>${SP[x.sp]}</td><td><span class="tag ${x.t>=3?'s'+x.t:''}">${ST[x.t]}</span></td></tr>`).join('')||'<tr><td colspan="8" class="empty">Tidak ada Customers yang cocok.</td></tr>'}</tbody></table></div>`;
 }
 function pkg(){
@@ -294,7 +294,7 @@ if(t.closest('#lopen')){const r=document.querySelector('input[name=lg][value='+l
 const nv=t.closest('nav button');if(nv&&nv.dataset.v){view=nv.dataset.v;render();return}
  if(t.closest('[data-add]')){open(null);return}
  const mv=t.closest('[data-mv]');
- if(mv){const x=D.find(y=>y.id==mv.dataset.id);x.t=Math.min(4,Math.max(0,x.t+ +mv.dataset.mv));render();sb.from('prospect').update({tahap:x.t}).eq('id',x.id).then(r=>{if(r.error){fail(r.error);loadAll()}});return}
+ if(mv){const x=D.find(y=>y.id==mv.dataset.id);x.t=Math.min(4,Math.max(0,x.t+ +mv.dataset.mv));render();sb.from('prospect').update({Step:x.t}).eq('id',x.id).then(r=>{if(r.error){fail(r.error);loadAll()}});return}
  if(t.closest('a'))return;
  const r=t.closest('[data-id]');if(r&&!dlg.open)open(+r.dataset.id);
 });
@@ -302,112 +302,112 @@ document.addEventListener('input',e=>{
  if(e.target.id==='q'){q=e.target.value;clearTimeout(qt);qt=setTimeout(()=>{const t=document.createElement('div');t.innerHTML=cust();$('.wrap').replaceWith(t.querySelector('.wrap'));tr($('.wrap'))},100)}
 });
 document.addEventListener('change',e=>{if(e.target.id==='fs'){fs=e.target.value;render()}if(e.target.id==='fp'){fp=e.target.value;render()}});
-const TS=`Summary|Sales overview|販売概要
-Summary|Overview|概要
-Pipeline penjualan|Sales pipeline|販売パイプライン
-Customers|Customers|顧客
-Tours Package Japan|Japan tour packages|日本ツアーパッケージ
-Tours Package|Tour packages|ツアーパッケージ
-Pengaturan|Settings|設定
-Keluar|Log out|ログアウト
-Tambah prospect|Add lead|リード追加
-Confirmed revenue|Confirmed revenue|確定売上
-Pipeline Value|Active pipeline value|進行中の案件額
-Active prospects|Active leads|進行中のリード
-Conversion rate|Conversion rate|成約率
-Revenue per package|Revenue by package|パッケージ別売上
-Belum ada transaksi Confirmed.|No confirmed bookings yet.|確定予約はまだありません。
-Immediate Steps|Upcoming follow-ups|直近のフォローアップ
-There Is No Follow-Up Schedule.|No follow-ups scheduled.|フォローアップ予定なし。
-Terlambat|Overdue|期限超過
-Kinerja tour specialist|Tour specialist performance|スペシャリスト実績
-Clients By Country|Clients by country|国別顧客数
-Belum ada klien.|No clients yet.|顧客はまだいません。
-New Prospect|New lead|新規リード
-prospect|Leads|リード
-Offer|Quotation|見積
-Negotiations|Negotiation|交渉
-Confirmed|Confirmed|確定
-Paid|Completed|完了
-Pendapatan|Revenue|売上
-Booking|Bookings|予約
-Specialist|Specialist|スペシャリスト
-participant|guests|名
-Berangkat|Departs|出発
-Tindak lanjut|Follow-up|フォローアップ
-Pindah ke tahap sebelumnya|Move to previous stage|前の段階へ
-Pindah ke tahap berikutnya|Move to next stage|次の段階へ
-Cari nama, kontak, atau paket|Search name, contact or package|名前・連絡先・パッケージで検索
-Cari Customers|Search customers|顧客を検索
-Filter tahap|Filter by stage|段階で絞り込み
-All Phase|All stages|すべての段階
-Filter specialist|Filter by specialist|スペシャリストで絞り込み
-Semua specialist|All specialists|全スペシャリスト
-Nama|Name|名前
-Negara|Country|国
-Kontak|Contact|連絡先
-Paket|Package|パッケージ
-Nilai|Value|金額
-Tahap|Stage|段階
-Tidak ada Customers yang cocok.|No matching customers.|該当する顧客はいません。
-Ubah data Customers|Edit customer|顧客情報を編集
-Nama Customers|Customer name|顧客名
-Sumber|Source|流入元
-Negara asal klien|Client's country|顧客の国
-Tour specialist (sales)|Tour specialist (sales)|ツアースペシャリスト（営業）
-Jumlah participant|Number of guests|参加人数
-Nilai transaksi (Rp)|Deal value (Rp)|取引額 (Rp)
-Otomatis dari paket|Auto from package|パッケージから自動
-Tanggal berangkat|Departure date|出発日
-Catatan|Notes|メモ
-Hapus|Delete|削除
-Tekan lagi untuk hapus|Press again to delete|もう一度押すと削除
-Batal|Cancel|キャンセル
-Simpan|Save|保存
-Pilih bahasa|Choose language|言語を選択
-Bahasa|Language|言語
-Akun|Account|アカウント
-Referral|Referral|紹介
-Korporat|Corporate|法人
-Travel fair|Travel fair|旅行フェア
+const TS=`Summary|Ringkasan Penjualan|販売概要
+Summary|Ringkasan|概要
+Pipeline|Pipeline Penjualan|販売パイプライン
+Customers|Pelanggan|顧客
+Tours Package Japan|Paket Tur Jepang|日本ツアーパッケージ
+Tours Package|Paket Tur|ツアーパッケージ
+Pengaturan|Pengaturan|設定
+Keluar|Keluar|ログアウト
+Tambah prospect|Tambah Prospek|リード追加
+Confirmed revenue|Pendapatan Terkonfirmasi|確定売上
+Pipeline Value|Nilai Pipeline Aktif|進行中の案件額
+Active prospects|Prospek Aktif|進行中のリード
+Conversion rate|Tingkat Konversi|成約率
+Revenue per package|Pendapatan per Paket|パッケージ別売上
+Belum ada transaksi Confirmed.|Belum ada pemesanan yang dikonfirmasi.|確定予約はまだありません。
+Immediate Steps|Tindak Lanjut Terdekat|直近のフォローアップ
+There Is No Follow-Up Schedule.|Belum ada jadwal tindak lanjut.|フォローアップ予定なし。
+Terlambat|Terlambat|期限超過
+Kinerja tour specialist|Kinerja Spesialis Tur|スペシャリスト実績
+Clients By Country|Pelanggan Berdasarkan Negara|国別顧客数
+Belum ada klien.|Belum ada pelanggan.|顧客はまだいません。
+New Prospect|Prospek Baru|新規リード
+prospect|Prospek|リード
+Offer|Penawaran|見積
+Negotiations|Negosiasi|交渉
+Confirmed|Terkonfirmasi|確定
+Paid|Selesai|完了
+Pendapatan|Pendapatan|売上
+Booking|Pemesanan|予約
+Specialist|Spesialis|スペシャリスト
+participant|Peserta|名
+Departure|Keberangkatan|出発
+Tindak lanjut|Tindak Lanjut|フォローアップ
+Pindah ke Step sebelumnya|Pindah ke Tahap Sebelumnya|前の段階へ
+Pindah ke Step berikutnya|Pindah ke Tahap Berikutnya|次の段階へ
+search name, contact, or package|Cari nama, kontak, atau paket|名前・連絡先・パッケージで検索
+Cari Customers|Cari Pelanggan|顧客を検索
+Filter Step|Filter Tahap|段階で絞り込み
+All Phase|Semua Tahap|すべての段階
+Filter specialist|Filter Spesialis|スペシャリストで絞り込み
+All Specialist|Semua Spesialis|全スペシャリスト
+Nama|Nama|名前
+Negara|Negara|国
+Kontak|Kontak|連絡先
+Package|Paket|パッケージ
+Nilai|Nilai Transaksi|金額
+Step|Tahap|段階
+Tidak ada Customers yang cocok.|Tidak ada pelanggan yang sesuai.|該当する顧客はいません。
+Ubah data Customers|Ubah Data Pelanggan|顧客情報を編集
+Nama Customers|Nama Pelanggan|顧客名
+Sumber|Sumber|流入元
+Negara asal klien|Negara Asal Pelanggan|顧客の国
+Tour specialist (sales)|Spesialis Tur (Penjualan)|ツアースペシャリスト（営業）
+Jumlah participant|Jumlah Peserta|参加人数
+Nilai transaksi (Rp)|Nilai Transaksi (Rp)|取引額 (Rp)
+Otomatis dari Package|Otomatis dari Paket|パッケージから自動
+Tanggal Departure|Tanggal Keberangkatan|出発日
+Catatan|Catatan|メモ
+Hapus|Hapus|削除
+Tekan lagi untuk hapus|Tekan Sekali Lagi untuk Menghapus|もう一度押すと削除
+Batal|Batal|キャンセル
+Simpan|Simpan|保存
+Pilih bahasa|Pilih Bahasa|言語を選択
+Bahasa|Bahasa|言語
+Akun|Akun|アカウント
+Referral|Referensi|紹介
+Korporat|Korporat|法人
+Travel fair|Pameran Wisata|旅行フェア
 Indonesia|Indonesia|インドネシア
-Singapura|Singapore|シンガポール
+Singapura|Singapura|シンガポール
 Malaysia|Malaysia|マレーシア
 Australia|Australia|オーストラリア
-Belanda|Netherlands|オランダ
+Belanda|Belanda|オランダ
 India|India|インド
-Amerika Serikat|United States|アメリカ
-Korea Selatan|South Korea|韓国
-Arab Saudi|Saudi Arabia|サウジアラビア
-Lainnya|Other|その他
-Japan: Tokyo–Fuji 5D4N|Japan: Tokyo–Fuji 5D4N|日本：東京・富士 4泊5日
-Japan: Kyoto–Osaka 6D5N|Japan: Kyoto–Osaka 6D5N|日本：京都・大阪 5泊6日
-Japan: Hokkaido Salju 6D5N|Japan: Hokkaido Snow 6D5N|日本：北海道の雪 5泊6日
-Japan: Sakura 7D6N|Japan: Sakura 7D6N|日本：桜 6泊7日
-Masuk ke CRM|Log in to Japan Tours CRM|CRMにログイン
-Buat akun baru|Create a new account|新規アカウント作成
-Nama lengkap|Full name|氏名
-ID (email)|ID (email)|ID（メール）
+Amerika Serikat|Amerika Serikat|アメリカ
+Korea Selatan|Korea Selatan|韓国
+Arab Saudi|Arab Saudi|サウジアラビア
+Lainnya|Lainnya|その他
+Japan: Tokyo–Fuji 5D4N|Jepang: Tokyo–Fuji 5 Hari 4 Malam|日本：東京・富士 4泊5日
+Japan: Kyoto–Osaka 6D5N|Jepang: Kyoto–Osaka 6 Hari 5 Malam|日本：京都・大阪 5泊6日
+Japan: Hokkaido Salju 6D5N|Jepang: Salju Hokkaido 6 Hari 5 Malam|日本：北海道の雪 5泊6日
+Japan: Sakura 7D6N|Jepang: Sakura 7 Hari 6 Malam|日本：桜 6泊7日
+Masuk ke CRM|Masuk ke Japan Tours CRM|Japan Tours CRMにログイン
+Buat akun baru|Buat Akun Baru|新規アカウント作成
+Nama lengkap|Nama Lengkap|氏名
+ID (email)|ID (Email)|ID（メール）
 Email|Email|メール
-Password|Password|パスワード
-Konfirmasi password|Confirm password|パスワード（確認）
-Tampilkan password|Show password|パスワードを表示
-Sembunyikan password|Hide password|パスワードを非表示
-Tampilkan|Show|表示
-Sembunyikan|Hide|非表示
-Masuk|Log in|ログイン
-Daftar|Sign up|新規登録
-Belum punya akun?|No account yet?|アカウントをお持ちでない方
-Sudah punya akun?|Already have an account?|アカウントをお持ちの方
-Kode undangan tim|Team invite code|チーム招待コード
-Kode undangan salah.|Invalid invite code.|招待コードが正しくありません。
-Isi semua kolom.|Please fill in all fields.|すべての項目を入力してください。
-Format email tidak valid.|Invalid email format.|メールの形式が正しくありません。
-Password minimal 6 karakter.|Password must be at least 6 characters.|パスワードは6文字以上にしてください。
-Konfirmasi password tidak sama.|Passwords do not match.|パスワードが一致しません。
-Email sudah terdaftar.|Email is already registered.|このメールは登録済みです。
-ID atau password salah.|Wrong ID or password.|IDまたはパスワードが違います。
-Akun berhasil dibuat. Silakan masuk dengan email Anda.|Account created. Please log in with your email.|アカウントを作成しました。メールでログインしてください。`;
+Password|Kata Sandi|パスワード
+Konfirmasi password|Konfirmasi Kata Sandi|パスワード（確認）
+Tampilkan password|Tampilkan Kata Sandi|パスワードを表示
+Sembunyikan password|Sembunyikan Kata Sandi|パスワードを非表示
+Tampilkan|Tampilkan|表示
+Sembunyikan|Sembunyikan|非表示
+Masuk|Masuk|ログイン
+Daftar|Daftar|新規登録
+Belum punya akun?|Belum Punya Akun?|アカウントをお持ちでない方
+Sudah punya akun?|Sudah Punya Akun?|アカウントをお持ちの方
+Kode undangan tim|Kode Undangan Tim|チーム招待コード
+Kode undangan salah.|Kode undangan salah.|招待コードが正しくありません。
+Isi semua kolom.|Harap isi semua kolom.|すべての項目を入力してください。
+Format email tidak valid.|Format email tidak valid.|メールの形式が正しくありません。
+Password minimal 6 karakter.|Kata sandi minimal 6 karakter.|パスワードは6文字以上にしてください。
+Konfirmasi password tidak sama.|Konfirmasi kata sandi tidak cocok.|パスワードが一致しません。
+Email sudah terdaftar.|Email sudah terdaftar.|このメールは登録済みです。
+ID atau password salah.|ID atau kata sandi salah.|IDまたはパスワードが違います。
+Akun berhasil dibuat. Silakan masuk dengan email Anda.|Akun berhasil dibuat. Silakan masuk menggunakan email Anda.|アカウントを作成しました。メールでログインしてください。`;
 const TX={};TS.split('\n').forEach(l=>{const p=l.split('|');TX[p[0]]=[p[1],p[2]]});
 const RX=new RegExp(Object.keys(TX).sort((a,b)=>b.length-a.length).map(k=>k.replace(/\W/g,c=>'\\'+c)).join('|'),'g');
 const cv=(s,L)=>s.replace(RX,m=>TX[m][L==='en'?0:1]);
@@ -442,15 +442,15 @@ const toD = r => {
     id: r.id,
     n: r.nama,
     w: r.whatsapp || '',
-    p: r.paket,
+    p: r.Package,
     s: r.sumber ?? 0,
     k: r.negara ?? 0,
     sp: idx,
     x: r.participant,
     v: r.nilai,
-    d: r.berangkat || '',
+    d: r.Departure || '',
     f: r.tindak_lanjut || '',
-    t: r.tahap,
+    t: r.Step,
     c: r.catatan || ''
   };
 };
@@ -458,14 +458,14 @@ const toD = r => {
 const toR = o => ({
   nama: o.n,
   whatsapp: o.w,
-  paket: o.p,
+  Package: o.p,
   sumber: o.s,
   negara: o.k,
   participant: o.x,
   nilai: o.v,
-  berangkat: o.d || null,
+  Departure: o.d || null,
   tindak_lanjut: o.f || null,
-  tahap: o.t,
+  Step: o.t,
   catatan: o.c,
   // Tetap gunakan UUID akun login untuk menjaga foreign key.
   specialist: SES.id,
