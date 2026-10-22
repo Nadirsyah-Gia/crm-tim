@@ -358,7 +358,7 @@ document.addEventListener('click',e=>{
  const t=e.target;
  if(t.closest('[data-logout]')){sb.auth.signOut();return}
 const au=t.closest('[data-auth]');if(au){showAuth(au.dataset.auth);return}
-const ey=t.closest('.eye');if(ey){const i=ey.previousElementSibling,h=i.type==='password';i.type=h?'text':'password';ey.textContent=h?'Sembunyikan':'Tampilkan';ey.setAttribute('aria-label',h?'Sembunyikan password':'Tampilkan password');tr(ey.parentElement);return}
+const ey=t.closest('.eye');if(ey){const i=ey.previousElementSibling,h=i.type==='password';i.type=h?'text':'password';ey.textContent=h?'Hide':'Show';ey.setAttribute('aria-label',h?'Hide password':'Show password');tr(ey.parentElement);return}
 if(t.closest('#lopen')){const r=document.querySelector('input[name=lg][value='+lang+']');if(r)r.checked=true;$('#ldlg').showModal();return}
 const nv=t.closest('nav button');if(nv&&nv.dataset.v){view=nv.dataset.v;render();return}
  if(t.closest('[data-add]')){open(null);return}
@@ -453,20 +453,20 @@ Japan: Tokyo–Fuji 5D4N|Jepang: Tokyo–Fuji 5 Hari 4 Malam|日本：東京・�
 Japan: Kyoto–Osaka 6D5N|Jepang: Kyoto–Osaka 6 Hari 5 Malam|日本：京都・大阪 5泊6日
 Japan: Hokkaido Snow 6D5N|Jepang: Snow Hokkaido 6 Hari 5 Malam|日本：北海道の雪 5泊6日
 Japan: Sakura 7D6N|Jepang: Sakura 7 Hari 6 Malam|日本：桜 6泊7日
-Submit ke CRM|Submit ke Japan Tours CRM|Japan Tours CRMにログイン
+Submit to CRM|Submit ke Japan Tours CRM|Japan Tours CRMにログイン
 Buat Account baru|Buat Account Baru|新規アカウント作成
 Name lengkap|Name Lengkap|氏名
 ID (email)|ID (Email)|ID（メール）
 Email|Email|メール
 Password|Password|パスワード
 Konfirmasi password|Konfirmasi Password|パスワード（確認）
-Tampilkan password|Tampilkan Password|パスワードを表示
-Sembunyikan password|Sembunyikan Password|パスワードを非表示
-Tampilkan|Tampilkan|表示
-Sembunyikan|Sembunyikan|非表示
+Show password|Show Password|パスワードを表示
+Hide password|Hide Password|パスワードを非表示
+Show|Show|表示
+Hide|Hide|非表示
 Submit|Submit|ログイン
 Daftar|Daftar|新規登録
-Belum punya Account?|Belum Punya Account?|アカウントをお持ちでない方
+Don't have an account yet?|Don't have an account yet?|アカウントをお持ちでない方
 Sudah punya Account?|Sudah Punya Account?|アカウントをお持ちの方
 Kode undangan tim|Kode Undangan Tim|チーム招待コード
 Kode undangan salah.|Kode undangan salah.|招待コードが正しくありません。
@@ -492,7 +492,7 @@ const sUS=a=>{try{localStorage.setItem('Japan Tours-users',JSON.stringify(a))}ca
 const hs=async(s,p)=>{try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(unescape(encodeURIComponent(s+p)))}};
 const INV='Japan2026';let SES=null;
 function showAuth(mode,msg,em){const su=mode==='up';
-$('#auth').innerHTML=`<div class='acard'><h1>Japan Tours CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Buat Account baru':'Submit ke CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Name lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Tampilkan password'>Tampilkan</button></div>${su?`<label for='ac'>Konfirmasi password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Kode undangan tim</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Daftar':'Submit'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Sudah punya Account?':'Belum punya Account?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Submit':'Daftar'}</button></p></div>`;tr($('#auth'))}
+$('#auth').innerHTML=`<div class='acard'><h1>Japan Tours CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Buat Account baru':'Submit to CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Name lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Show password'>Show</button></div>${su?`<label for='ac'>Konfirmasi password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Kode undangan tim</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Daftar':'Submit'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Sudah punya Account?':'Don't have an account yet?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Submit':'Daftar'}</button></p></div>`;tr($('#auth'))}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const fail=e=>{console.error(e);const b=document.createElement('div');b.style.cssText='position:fixed;left:12px;right:12px;bottom:84px;background:#b8344f;color:#fff;padding:12px;border-radius:10px;z-index:99';b.textContent=e.message;document.body.append(b);setTimeout(()=>b.remove(),6000)};
 
