@@ -469,7 +469,7 @@ Sign Up|Sign Up|新規登録
 Don't have an account yet?|Don't have an account yet?|アカウントをお持ちでない方
 Already have an account?|Already have an account?|アカウントをお持ちの方
 Team invitation code|Team invitation code|チーム招待コード
-Kode undangan salah.|Kode undangan salah.|招待コードが正しくありません。
+Invalid.|Invalid.|招待コードが正しくありません。
 Isi semua kolom.|Harap isi semua kolom.|すべての項目を入力してください。
 Format email tidak valid.|Format email tidak valid.|メールの形式が正しくありません。
 Password minimal 6 karakter.|Password minimal 6 karakter.|パスワードは6文字以上にしてください。
@@ -584,8 +584,8 @@ document.addEventListener('submit',async e=>{
    if(p.length<6)return err('Password minimal 6 karakter.');
    if(p!==$('#ac').value)return err('Confirm password tidak sama.');
    holdAuth=true;
-   const r=await sb.auth.signUp({email:em,password:p,options:{data:{Name:$('#an').value.trim(),kode:$('#ak').value.trim()}}});
-   if(r.error){holdAuth=false;const m=r.error.message||'';return err(/already|registered/i.test(m)?'Email sudah terSign Up.':/database error|kode/i.test(m)?'Kode undangan salah.':m)}
+   const r=await sb.auth.signUp({email:em,password:p,options:{data:{Name:$('#an').value.trim(),Code:$('#ak').value.trim()}}});
+   if(r.error){holdAuth=false;const m=r.error.message||'';return err(/already|registered/i.test(m)?'Email sudah terSign Up.':/database error|Code/i.test(m)?'Invalid.':m)}
    await sb.auth.signOut();holdAuth=false;
    showAuth('in','Account berhasil dibuat. Silakan Submit dengan email Anda.',em);
   }else{
