@@ -134,29 +134,98 @@ dialog{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0;m
 <main id="main"></main>
 </div>
 
-<dialog id="ldlg"><h2>Pilih bahasa</h2><div style="margin:16px 0 8px"><label class="lo"><input type="radio" name="lg" value="id"><span translate="no">Bahasa Indonesia</span></label><label class="lo"><input type="radio" name="lg" value="en"><span translate="no">English</span></label><label class="lo"><input type="radio" name="lg" value="ja"><span translate="no">日本語</span></label></div><div class="acts" style="justify-content:flex-end"><button type="button" class="btn ghost" id="lc">Batal</button> <button type="button" class="btn" id="ls">Simpan</button></div></dialog>
+<dialog id="ldlg">
+  <h2>Select Language</h2>
+  <div style="margin:16px 0 8px">
+    <label class="lo">
+      <input type="radio" name="lg" value="en">
+      <span translate="no">English</span>
+    </label>
+    <label class="lo">
+      <input type="radio" name="lg" value="ja">
+      <span translate="no">日本語</span>
+    </label>
+  </div>
+  <div class="acts" style="justify-content:flex-end">
+    <button type="button" class="btn ghost" id="lc">Cancel</button>
+    <button type="button" class="btn" id="ls">Save</button>
+  </div>
+</dialog>
+
 <dialog id="dlg">
-<form method="dialog" id="frm" onsubmit="return false">
-<h2 id="dt">New Prospect</h2>
-<div class="g">
-<div><label for="n">Nama Customers</label><input id="n" required></div>
-<div><label for="w">WhatsApp</label><input id="w" inputmode="tel" placeholder="08123456789"></div>
-<div><label for="p">Tours Package Japan</label><select id="p"></select></div>
-<div><label for="s">Sumber</label><select id="s"></select></div>
-<div><label for="k">Negara asal klien</label><select id="k"></select></div>
-<div><label for="sp">Tour specialist (sales)</label><select id="sp"></select></div>
-<div><label for="x">Jumlah participant</label><input id="x" type="number" min="1" value="2"></div>
-<div><label for="v">Nilai transaksi (Rp)</label><input id="v" type="number" min="0" placeholder="Otomatis dari Package"></div>
-<div><label for="d">Tanggal Departure</label><input id="d" type="date"></div>
-<div><label for="f">Tindak lanjut</label><input id="f" type="date"></div>
-<div class="f"><label for="t">Step</label><select id="t"></select></div>
-<div class="f"><label for="c">Catatan</label><textarea id="c" rows="3"></textarea></div>
-</div>
-<div class="acts">
-<button type="button" class="btn danger" id="del">Hapus</button>
-<span><button type="button" class="btn ghost" id="cancel">Batal</button> <button type="button" class="btn" id="save">Simpan</button></span>
-</div>
-</form>
+  <form method="dialog" id="frm" onsubmit="return false">
+    <h2 id="dt">New Lead</h2>
+
+    <div class="g">
+      <div>
+        <label for="n">Customer Name</label>
+        <input id="n" required>
+      </div>
+
+      <div>
+        <label for="w">WhatsApp</label>
+        <input id="w" inputmode="tel" placeholder="08123456789">
+      </div>
+
+      <div>
+        <label for="p">Japan Tour Package</label>
+        <select id="p"></select>
+      </div>
+
+      <div>
+        <label for="s">Lead Source</label>
+        <select id="s"></select>
+      </div>
+
+      <div>
+        <label for="k">Customer's Country</label>
+        <select id="k"></select>
+      </div>
+
+      <div>
+        <label for="sp">Tour Specialist (Sales)</label>
+        <select id="sp"></select>
+      </div>
+
+      <div>
+        <label for="x">Number of Travelers</label>
+        <input id="x" type="number" min="1" value="2">
+      </div>
+
+      <div>
+        <label for="v">Deal Value (IDR)</label>
+        <input id="v" type="number" min="0" placeholder="Automatically set from package">
+      </div>
+
+      <div>
+        <label for="d">Departure Date</label>
+        <input id="d" type="date">
+      </div>
+
+      <div>
+        <label for="f">Follow-up Date</label>
+        <input id="f" type="date">
+      </div>
+
+      <div class="f">
+        <label for="t">Stage</label>
+        <select id="t"></select>
+      </div>
+
+      <div class="f">
+        <label for="c">Notes</label>
+        <textarea id="c" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="acts">
+      <button type="button" class="btn danger" id="del">Delete</button>
+      <span>
+        <button type="button" class="btn ghost" id="cancel">Cancel</button>
+        <button type="button" class="btn" id="save">Save</button>
+      </span>
+    </div>
+  </form>
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
