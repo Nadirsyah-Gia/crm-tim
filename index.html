@@ -502,8 +502,7 @@ async function loadAll() {
   D = prospectsRes.data.map(toD);
   render();
 }
-
-}
+ 
 let holdAuth=false,live=false;
 document.addEventListener('submit',async e=>{
  if(e.target.id!=='af')return;e.preventDefault();
