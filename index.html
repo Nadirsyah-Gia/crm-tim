@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CRM Japan Tours</title>
+<title>Japan Tours CRM — Japan Tour Management</title>
 <meta name="theme-color" content="#0b1f3a">
 <style>
 :root{--bg:#f3f0e8;--surf:#fdfcf8;--ink:#0b1f3a;--mut:#5a6a82;--line:#ddd8ca;--lag:#13335f;--lagd:#0b1f3a;--sun:#c9a24a;--hib:#b8344f;--ok:#2f7d57;--chip:#ebe6d9;--nav:#0b1f3a;--onlag:#fff;
@@ -125,7 +125,7 @@ dialog{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0;m
 <div id="auth" hidden></div>
 <div class="app" hidden>
 <nav aria-label="Menu utama">
-<div class="logo">Pesisir CRM<small>Khusus tur Jepang</small></div>
+<div class="logo">Japan Tours CRM<small>Japan Tour Management</small></div>
 <button data-v="home">Ringkasan</button>
 <button data-v="pipe">Pipeline</button>
 <button data-v="cust">Pelanggan</button>
@@ -141,7 +141,7 @@ dialog{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0;m
 <div class="g">
 <div><label for="n">Nama pelanggan</label><input id="n" required></div>
 <div><label for="w">WhatsApp</label><input id="w" inputmode="tel" placeholder="08123456789"></div>
-<div><label for="p">Paket tur Jepang</label><select id="p"></select></div>
+<div><label for="p">Paket tur Japan</label><select id="p"></select></div>
 <div><label for="s">Sumber</label><select id="s"></select></div>
 <div><label for="k">Negara asal klien</label><select id="k"></select></div>
 <div><label for="sp">Tour specialist (sales)</label><select id="sp"></select></div>
@@ -165,10 +165,10 @@ dialog{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:16px 16px 0 0;m
 const SUPABASE_URL='https://wivitvllhhowbizunecf.supabase.co';
 const SUPABASE_KEY='sb_publishable_L0-ucVqkstPj2Zijq5U5PA_hXXc_2ZC';
 // ====================================================================
-const PK=[{n:'Jepang: Tokyo–Fuji 5H4M',p:14500000,d:'Shibuya, Hakone, Gunung Fuji'},{n:'Jepang: Kyoto–Osaka 6H5M',p:16800000,d:'Fushimi Inari, Arashiyama, Dotonbori'},{n:'Jepang: Hokkaido Salju 6H5M',p:19500000,d:'Sapporo, Otaru, Niseko'},{n:'Jepang: Sakura 7H6M',p:21000000,d:'Tokyo, Kyoto, hanami musim semi'}];
+const PK=[{n:'Japan: Tokyo–Fuji 5H4M',p:14500000,d:'Shibuya, Hakone, Gunung Fuji'},{n:'Japan: Kyoto–Osaka 6H5M',p:16800000,d:'Fushimi Inari, Arashiyama, Dotonbori'},{n:'Japan: Hokkaido Salju 6H5M',p:19500000,d:'Sapporo, Otaru, Niseko'},{n:'Japan: Sakura 7H6M',p:21000000,d:'Tokyo, Kyoto, hanami musim semi'}];
 const ST=['Prospek baru','Penawaran','Negosiasi','Terkonfirmasi','Selesai'];
 const SRC=['Instagram','WhatsApp','Website','Referral','Travel fair','Korporat'];
-const KEY='pesisir-crm-v3';let lang='id';try{lang=localStorage.getItem('pesisir-lang')||'id'}catch(e){}
+const KEY='Japan Tours-crm-v3';let lang='id';try{lang=localStorage.getItem('Japan Tours-lang')||'id'}catch(e){}
 const CT=['Indonesia','Singapura','Malaysia','Australia','Belanda','India','Amerika Serikat','Korea Selatan','Arab Saudi','Lainnya'];
 let SP=[];
 const day=o=>{const d=new Date();d.setDate(d.getDate()+o);return d.toISOString().slice(0,10)};
@@ -255,7 +255,7 @@ function cust(){
  ${l.map(x=>`<tr data-id="${x.id}"><td>${esc(x.n)}</td><td>${CT[x.k]}</td><td>${esc(x.w)}</td><td>${esc(PK[x.p].n)}</td><td>${dt(x.d)}</td><td>${rp(x.v)}</td><td>${SP[x.sp]}</td><td><span class="tag ${x.t>=3?'s'+x.t:''}">${ST[x.t]}</span></td></tr>`).join('')||'<tr><td colspan="8" class="empty">Tidak ada pelanggan yang cocok.</td></tr>'}</tbody></table></div>`;
 }
 function pkg(){
- return head('Paket tur Jepang',false)+'<div class="pk">'+PK.map((k,i)=>{
+ return head('Paket tur Japan',false)+'<div class="pk">'+PK.map((k,i)=>{
   const l=D.filter(x=>x.p===i);
   return `<div class="panel"><h3>${k.n}</h3><p style="color:var(--mut);margin:4px 0 0">${k.d}</p><b>${rp(k.p)}<small style="font:400 13px 'Instrument Sans';color:var(--mut)"> /orang</small></b><p style="margin:10px 0 0;font-size:13px;color:var(--mut)">${l.length} prospek · ${l.reduce((a,x)=>a+(+x.x||0),0)} peserta</p></div>`}).join('')+'</div>';
 }
@@ -306,7 +306,7 @@ const TS=`Ringkasan penjualan|Sales overview|販売概要
 Ringkasan|Overview|概要
 Pipeline penjualan|Sales pipeline|販売パイプライン
 Pelanggan|Customers|顧客
-Paket tur Jepang|Japan tour packages|日本ツアーパッケージ
+Paket tur Japan|Japan tour packages|日本ツアーパッケージ
 Paket tur|Tour packages|ツアーパッケージ
 Pengaturan|Settings|設定
 Keluar|Log out|ログアウト
@@ -380,10 +380,10 @@ Amerika Serikat|United States|アメリカ
 Korea Selatan|South Korea|韓国
 Arab Saudi|Saudi Arabia|サウジアラビア
 Lainnya|Other|その他
-Jepang: Tokyo–Fuji 5H4M|Japan: Tokyo–Fuji 5D4N|日本：東京・富士 4泊5日
-Jepang: Kyoto–Osaka 6H5M|Japan: Kyoto–Osaka 6D5N|日本：京都・大阪 5泊6日
-Jepang: Hokkaido Salju 6H5M|Japan: Hokkaido Snow 6D5N|日本：北海道の雪 5泊6日
-Jepang: Sakura 7H6M|Japan: Sakura 7D6N|日本：桜 6泊7日
+Japan: Tokyo–Fuji 5H4M|Japan: Tokyo–Fuji 5D4N|日本：東京・富士 4泊5日
+Japan: Kyoto–Osaka 6H5M|Japan: Kyoto–Osaka 6D5N|日本：京都・大阪 5泊6日
+Japan: Hokkaido Salju 6H5M|Japan: Hokkaido Snow 6D5N|日本：北海道の雪 5泊6日
+Japan: Sakura 7H6M|Japan: Sakura 7D6N|日本：桜 6泊7日
 Masuk ke CRM|Log in to CRM|CRMにログイン
 Buat akun baru|Create a new account|新規アカウント作成
 Nama lengkap|Full name|氏名
@@ -417,13 +417,13 @@ root.querySelectorAll('[placeholder],[aria-label]').forEach(el=>{for(const a of 
 const LN={id:'Bahasa Indonesia',en:'English',ja:'日本語'};
 function setv(){return head('Pengaturan',false)+`<div class='panel' style='max-width:520px'><h2>Akun</h2><b>${esc(SES.nama)}</b><div style='color:var(--mut)'>${esc(SES.email)}</div></div><div class='panel' style='max-width:520px;margin-top:14px'><h2>Bahasa</h2><button class='btn ghost' id='lopen' style='width:100%;display:flex;justify-content:space-between'><span translate='no'>${LN[lang]}</span><span aria-hidden='true'>›</span></button></div><div style='margin-top:14px'><button class='btn danger' data-logout>Keluar</button></div>`}
 $('#lc').onclick=()=>$('#ldlg').close();
-$('#ls').onclick=()=>{const v=document.querySelector('input[name=lg]:checked');if(v){lang=v.value;try{localStorage.setItem('pesisir-lang',lang)}catch(e){}}$('#ldlg').close();document.documentElement.lang=lang;render()};
-const US=()=>{try{return JSON.parse(localStorage.getItem('pesisir-users')||'[]')}catch(e){return[]}};
-const sUS=a=>{try{localStorage.setItem('pesisir-users',JSON.stringify(a))}catch(e){}};
+$('#ls').onclick=()=>{const v=document.querySelector('input[name=lg]:checked');if(v){lang=v.value;try{localStorage.setItem('Japan Tours-lang',lang)}catch(e){}}$('#ldlg').close();document.documentElement.lang=lang;render()};
+const US=()=>{try{return JSON.parse(localStorage.getItem('Japan Tours-users')||'[]')}catch(e){return[]}};
+const sUS=a=>{try{localStorage.setItem('Japan Tours-users',JSON.stringify(a))}catch(e){}};
 const hs=async(s,p)=>{try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(unescape(encodeURIComponent(s+p)))}};
-const INV='JEPANG2026';let SES=null;
+const INV='Japan2026';let SES=null;
 function showAuth(mode,msg,em){const su=mode==='up';
-$('#auth').innerHTML=`<div class='acard'><h1>Pesisir CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Buat akun baru':'Masuk ke CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Nama lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Tampilkan password'>Tampilkan</button></div>${su?`<label for='ac'>Konfirmasi password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Kode undangan tim</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Daftar':'Masuk'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Sudah punya akun?':'Belum punya akun?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Masuk':'Daftar'}</button></p></div>`;tr($('#auth'))}
+$('#auth').innerHTML=`<div class='acard'><h1>Japan Tours CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Buat akun baru':'Masuk ke CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Nama lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Tampilkan password'>Tampilkan</button></div>${su?`<label for='ac'>Konfirmasi password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Kode undangan tim</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Daftar':'Masuk'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Sudah punya akun?':'Belum punya akun?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Masuk':'Daftar'}</button></p></div>`;tr($('#auth'))}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const fail=e=>{console.error(e);const b=document.createElement('div');b.style.cssText='position:fixed;left:12px;right:12px;bottom:84px;background:#b8344f;color:#fff;padding:12px;border-radius:10px;z-index:99';b.textContent=e.message;document.body.append(b);setTimeout(()=>b.remove(),6000)};
 
