@@ -1,0 +1,148 @@
+const CONFIG = {
+  SOC_SOC: { sheet: 'SOC - SOC', statusCell: 'AX1', counterCell: 'BA1' },
+  SOC_LM:  { sheet: 'SOC - LM',  statusCell: 'AW1' },
+  cols: {
+    AJ: 36,
+    AV: 48,
+    BJ: 62,
+    X: 24,
+    AF: 32,
+    AG: 33
+  }
+};
+
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('GIA')
+    .addItem('Toggle Auto Assign (SOC-SOC & SOC-LM)', 'toggleGIA')
+    .addItem('Enable AutoRun 1 Minute', 'enableAutoRun1Minute')
+    .addItem('Disable AutoRun', 'disableAutoRun')
+    .addToUi();
+}
+
+
+function toggleGIA() {
+  const ss = SpreadsheetApp.getActive();
+  const socSoc = ss.getSheetByName(CONFIG.SOC_SOC.sheet);
+  const socLm = ss.getSheetByName(CONFIG.SOC_LM.sheet);
+
+  const state = socSoc.getRange(CONFIG.SOC_SOC.statusCell).getValue() === 'ON' ? 'OFF' : 'ON';
+  socSoc.getRange(CONFIG.SOC_SOC.statusCell).setValue(state);
+  socLm.getRange(CONFIG.SOC_LM.statusCell).setValue(state);
+
+  if (state === 'ON' && !socSoc.getRange(CONFIG.SOC_SOC.counterCell).getValue()) {
+    socSoc.getRange(CONFIG.SOC_SOC.counterCell).setValue(0); 
+  }
+}
+
+
+function onEdit(e) {
+  masterAuto();
+}
+
+
+function masterAuto() {
+  autoAssign(CONFIG.SOC_SOC.sheet);
+  autoAssign(CONFIG.SOC_LM.sheet);
+}
+
+
+function autoAssign(sheetName) {
+  const ss = SpreadsheetApp.getActive();
+  const sh = ss.getSheetByName(sheetName);
+
+  const statusCell =
+    sheetName === CONFIG.SOC_SOC.sheet ? CONFIG.SOC_SOC.statusCell : CONFIG.SOC_LM.statusCell;
+
+  if (sh.getRange(statusCell).getValue() !== 'ON') return;
+
+  const lastRow = sh.getLastRow();
+  if (lastRow < 2) return;
+
+  const data = sh.getRange(2, 1, lastRow - 1, 65).getValues();
+
+  for (let i = 0; i < data.length; i++) {
+    const vAJ = data[i][CONFIG.cols.AJ - 1];
+    const vAV = data[i][CONFIG.cols.AV - 1];
+    const vBJ = data[i][CONFIG.cols.BJ - 1];
+    const vPIC = data[i][CONFIG.cols.X - 1];
+
+    if (vPIC) continue;
+    if (vAJ !== 'Assign Ticket') continue;
+
+    let assignee = '';
+    let email = '';
+
+    
+   
+    if (sheetName === CONFIG.SOC_SOC.sheet) {
+
+      if ((vAV === 'Jabo & Banten' || vAV === 'Sumatera & Gateway (CGK-KOS)') && vBJ === '') {
+        assignee = 'Gerry Astomo Kusuma Wibakti';
+        email = 'nadirsyah.gia@spxexpress.com';
+      }
+
+      if (vAV === 'Sumatera & Gateway (CGK-KOS)' && vBJ === 'Admin 1') {
+        assignee = 'Rahman Isya Nur Muhammad';
+        email = 'nadirsyah.gia@spxexpress.com';
+      }
+
+      if (vAV === 'Sumatera & Gateway (CGK-KOS)' && vBJ === 'Admin 2') {
+        assignee = 'Chalifah Salahudin';
+        email = 'nadirsyah.gia@spxexpress.com';
+      }
+
+      
+      if (vAV === 'Jawa, Balnus & Kalsulmalpap' && vBJ === '') {
+        assignee = 'Ahmad Hidayat';
+        email = 'nadirsyah.gia@spxexpress.com';
+      }
+    }
+
+
+    
+    if (sheetName === CONFIG.SOC_LM.sheet) {
+
+      if (vAV === 'Jabo & Banten') {
+        assignee = 'Gerry Astomo Kusuma Wibakti';
+        email = 'nadirsyah.gia@spxexpress.com';
+      }
+
+      if (vAV === 'Sumatera & Gateway (CGK-KOS)') {
+        assignee = 'Ahmad Hidayat';
+        email = 'nadirsyah.gia@spxexpress.com';
+      }
+
+      if (vAV === 'Jawa, Balnus & Kalsulmalpap') {
+        assignee = 'Ahmad Hidayat';
+        email = 'nadirsyah.gia@spxexpress.com';
+      }
+    }
+
+
+    
+    if (!assignee) continue;
+
+    
+    sh.getRange(i + 2, CONFIG.cols.X).setValue(assignee);
+    sh.getRange(i + 2, CONFIG.cols.AF).setValue('Open');
+    sh.getRange(i + 2, CONFIG.cols.AG).setValue(email);
+  }
+}
+
+
+
+function enableAutoRun1Minute() {
+  ScriptApp.getProjectTriggers().forEach(t => {
+    if (t.getHandlerFunction() === 'masterAuto') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('masterAuto').timeBased().everyMinutes(1).create();
+}
+
+
+function disableAutoRun() {
+  ScriptApp.getProjectTriggers().forEach(t => {
+    if (t.getHandlerFunction() === 'masterAuto') ScriptApp.deleteTrigger(t);
+  });
+}
