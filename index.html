@@ -483,7 +483,7 @@ const cv=(s,L)=>s.replace(RX,m=>TX[m][L==='en'?0:1]);
 function tr(root){if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
 while(n=w.nextNode()){const p=n.parentElement;if(!p||/^(SCRIPT|STYLE)$/.test(p.tagName)||p.closest('[translate=no]'))continue;const o=n.__o??=n.nodeValue;n.nodeValue=lang==='id'?o:cv(o,lang)}
 root.querySelectorAll('[placeholder],[aria-label]').forEach(el=>{for(const a of ['placeholder','aria-label']){const v=el.getAttribute(a);if(v==null)continue;const o=el['_'+a],s=o&&v===o[1]?o[0]:v,x=lang==='id'?s:cv(s,lang);el.setAttribute(a,x);el['_'+a]=[s,x]}})}
-const LN={id:'Language Indonesia',en:'English',ja:'日本語'};
+const LN={id:'Language',en:'English',ja:'日本語'};
 function setv(){return head('Setting',false)+`<div class='panel' style='max-width:520px'><h2>Account</h2><b>${esc(SES.Name)}</b><div style='color:var(--mut)'>${esc(SES.email)}</div></div><div class='panel' style='max-width:520px;margin-top:14px'><h2>Language</h2><button class='btn ghost' id='lopen' style='width:100%;display:flex;justify-content:space-between'><span translate='no'>${LN[lang]}</span><span aria-hidden='true'>›</span></button></div><div style='margin-top:14px'><button class='btn danger' data-logout>Logout</button></div>`}
 $('#lc').onclick=()=>$('#ldlg').close();
 $('#ls').onclick=()=>{const v=document.querySelector('input[name=lg]:checked');if(v){lang=v.value;try{localStorage.setItem('Japan Tours-lang',lang)}catch(e){}}$('#ldlg').close();document.documentElement.lang=lang;render()};
