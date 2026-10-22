@@ -209,22 +209,22 @@ function home(){
  const by={};D.filter(x=>x.t>=3).forEach(x=>{const k=PK[x.p].n;by[k]=(by[k]||0)+(+x.v||0)});
  const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]);const mx=rows[0]?rows[0][1]:1;
  const fu=act.filter(x=>x.f).sort((a,b)=>a.f<b.f?-1:1).slice(0,6);
- return head('Summary penjualan')+`
+ return head('Summary')+`
  <div class="kpis">
  <div class="kpi main"><span>Confirmed revenue</span><b>${jt(cv)}</b></div>
- <div class="kpi"><span>Nilai pipeline aktif</span><b>${jt(pv)}</b></div>
+ <div class="kpi"><span>Pipeline Value</span><b>${jt(pv)}</b></div>
  <div class="kpi"><span>Active prospects</span><b>${act.length}</b></div>
  <div class="kpi"><span>Conversion rate</span><b>${conv}%</b></div></div>
  <div class="two">
  <div class="panel"><h2>Revenue per package</h2>${rows.length?rows.map(([k,v])=>`<div class="bar"><span>${esc(k)}</span><span><i style="width:${Math.max(4,v/mx*100)}%"></i></span><em>${jt(v)}</em></div>`).join(''):'<p class="empty">Belum ada transaksi Confirmed.</p>'}</div>
- <div class="panel"><h2>Tindak lanjut terdekat</h2>${fu.length?fu.map(x=>`<div class="fu" data-id="${x.id}"><div>${esc(x.n)}<small>${esc(PK[x.p].n)} · ${ST[x.t]}</small></div><span class="${x.f<today?'late':''}">${x.f<today?'Terlambat · ':''}${dt(x.f)}</span></div>`).join(''):'<p class="empty">Tidak ada jadwal tindak lanjut.</p>'}</div>${perf()}${ctry()}
+ <div class="panel"><h2>Immediate Steps</h2>${fu.length?fu.map(x=>`<div class="fu" data-id="${x.id}"><div>${esc(x.n)}<small>${esc(PK[x.p].n)} · ${ST[x.t]}</small></div><span class="${x.f<today?'late':''}">${x.f<today?'Terlambat · ':''}${dt(x.f)}</span></div>`).join(''):'<p class="empty">There Is No Follow-Up Schedule.</p>'}</div>${perf()}${ctry()}
  </div>`;
 }
 
 function perf(){
   return `<div class="panel"><h2>Kinerja tour specialist</h2>
   <div class="wrap" style="border:0"><table style="min-width:420px">
-  <thead><tr><th>Penanggung jawab</th><th>prospect</th><th>Booking</th><th>Pendapatan</th></tr></thead>
+  <thead><tr><th>Person Responsible</th><th>prospect</th><th>Booking</th><th>Pendapatan</th></tr></thead>
   <tbody>${SP.map((n,i)=>{
     const l=D.filter(x=>x.sp===i),c=l.filter(x=>x.t>=3);
     return `<tr style="cursor:default">
@@ -234,7 +234,7 @@ function perf(){
   }).join('')}</tbody></table></div></div>`;
 }
 
-function ctry(){const c={};D.forEach(x=>c[x.k]=(c[x.k]||0)+1);const r=Object.entries(c).sort((a,b)=>b[1]-a[1]);const m=r.length?r[0][1]:1;return `<div class="panel"><h2>Klien per negara</h2>${r.map(([k,n])=>`<div class="bar"><span>${CT[k]}</span><span><i style="width:${n/m*100}%"></i></span><em>${n}</em></div>`).join('')||'<p class="empty">Belum ada klien.</p>'}</div>`}
+function ctry(){const c={};D.forEach(x=>c[x.k]=(c[x.k]||0)+1);const r=Object.entries(c).sort((a,b)=>b[1]-a[1]);const m=r.length?r[0][1]:1;return `<div class="panel"><h2>Clients By Country</h2>${r.map(([k,n])=>`<div class="bar"><span>${CT[k]}</span><span><i style="width:${n/m*100}%"></i></span><em>${n}</em></div>`).join('')||'<p class="empty">Belum ada klien.</p>'}</div>`}
 function card(x){
  const wa='https://wa.me/'+String(x.w||'').replace(/\D/g,'').replace(/^0/,'62');
  return `<div class="card"><b data-id="${x.id}">${esc(x.n)}</b><p>${esc(PK[x.p].n)} · ${x.x} participant</p><p>${CT[x.k]} · Specialist: ${SP[x.sp]}</p><p>Berangkat ${dt(x.d)}</p>
@@ -302,7 +302,7 @@ document.addEventListener('input',e=>{
  if(e.target.id==='q'){q=e.target.value;clearTimeout(qt);qt=setTimeout(()=>{const t=document.createElement('div');t.innerHTML=cust();$('.wrap').replaceWith(t.querySelector('.wrap'));tr($('.wrap'))},100)}
 });
 document.addEventListener('change',e=>{if(e.target.id==='fs'){fs=e.target.value;render()}if(e.target.id==='fp'){fp=e.target.value;render()}});
-const TS=`Summary penjualan|Sales overview|販売概要
+const TS=`Summary|Sales overview|販売概要
 Summary|Overview|概要
 Pipeline penjualan|Sales pipeline|販売パイプライン
 Customers|Customers|顧客
@@ -312,16 +312,16 @@ Pengaturan|Settings|設定
 Keluar|Log out|ログアウト
 Tambah prospect|Add lead|リード追加
 Confirmed revenue|Confirmed revenue|確定売上
-Nilai pipeline aktif|Active pipeline value|進行中の案件額
+Pipeline Value|Active pipeline value|進行中の案件額
 Active prospects|Active leads|進行中のリード
 Conversion rate|Conversion rate|成約率
 Revenue per package|Revenue by package|パッケージ別売上
 Belum ada transaksi Confirmed.|No confirmed bookings yet.|確定予約はまだありません。
-Tindak lanjut terdekat|Upcoming follow-ups|直近のフォローアップ
-Tidak ada jadwal tindak lanjut.|No follow-ups scheduled.|フォローアップ予定なし。
+Immediate Steps|Upcoming follow-ups|直近のフォローアップ
+There Is No Follow-Up Schedule.|No follow-ups scheduled.|フォローアップ予定なし。
 Terlambat|Overdue|期限超過
 Kinerja tour specialist|Tour specialist performance|スペシャリスト実績
-Klien per negara|Clients by country|国別顧客数
+Clients By Country|Clients by country|国別顧客数
 Belum ada klien.|No clients yet.|顧客はまだいません。
 New Prospect|New lead|新規リード
 prospect|Leads|リード
@@ -469,7 +469,7 @@ const toR = o => ({
   catatan: o.c,
   // Tetap gunakan UUID akun login untuk menjaga foreign key.
   specialist: SES.id,
-  // Simpan nama penanggung jawab yang dipilih di dropdown.
+  // Simpan nama Person Responsible yang dipilih di dropdown.
   penanggung_jawab_nama: SP[o.sp] || 'Admin'
 });
 
@@ -492,7 +492,7 @@ async function loadAll() {
   SP_BY_NAME = new Map(SP.map((nama, i) => [nama, i]));
 
   if (!SP.length) {
-    return fail({ message: 'Daftar penanggung jawab masih Vacant.' });
+    return fail({ message: 'Daftar Person Responsible masih Vacant.' });
   }
 
   $('#sp').innerHTML = SP
