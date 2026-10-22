@@ -286,7 +286,7 @@ function home(){
  <div class="kpi"><span>Conversion rate</span><b>${conv}%</b></div></div>
  <div class="two">
  <div class="panel"><h2>Revenue per package</h2>${rows.length?rows.map(([k,v])=>`<div class="bar"><span>${esc(k)}</span><span><i style="width:${Math.max(4,v/mx*100)}%"></i></span><em>${jt(v)}</em></div>`).join(''):'<p class="empty">No confirmed transactions yet.</p>'}</div>
- <div class="panel"><h2>Immediate Steps</h2>${fu.length?fu.map(x=>`<div class="fu" data-id="${x.id}"><div>${esc(x.n)}<small>${esc(PK[x.p].n)} · ${ST[x.t]}</small></div><span class="${x.f<today?'late':''}">${x.f<today?'Terlambat · ':''}${dt(x.f)}</span></div>`).join(''):'<p class="empty">There Is No Follow-Up Schedule.</p>'}</div>${perf()}${ctry()}
+ <div class="panel"><h2>Immediate Steps</h2>${fu.length?fu.map(x=>`<div class="fu" data-id="${x.id}"><div>${esc(x.n)}<small>${esc(PK[x.p].n)} · ${ST[x.t]}</small></div><span class="${x.f<today?'late':''}">${x.f<today?'Late · ':''}${dt(x.f)}</span></div>`).join(''):'<p class="empty">There Is No Follow-Up Schedule.</p>'}</div>${perf()}${ctry()}
  </div>`;
 }
 
@@ -379,21 +379,21 @@ Tours Package Japan|Paket Tur Jepang|日本ツアーパッケージ
 Tours Package|Paket Tur|ツアーパッケージ
 Setting|Setting|設定
 Logout|Logout|ログアウト
-Add Prospect|Tambah Prospek|リード追加
+Add Prospect|Tambah Prospect|リード追加
 Confirmed revenue|Pendapatan Terkonfirmasi|確定売上
 Pipeline Value|Value Pipeline Aktif|進行中の案件額
-Active prospects|Prospek Aktif|進行中のリード
+Active prospects|Prospect Aktif|進行中のリード
 Conversion rate|Tingkat Konversi|成約率
 Revenue per package|Pendapatan per Paket|パッケージ別売上
 No confirmed transactions yet.|Belum ada pemesanan yang dikonfirmasi.|確定予約はまだありません。
 Immediate Steps|Tindak Lanjut Terdekat|直近のフォローアップ
 There Is No Follow-Up Schedule.|Belum ada jadwal tindak lanjut.|フォローアップ予定なし。
-Terlambat|Terlambat|期限超過
+Late|Late|期限超過
 Tour specialist performance|Kinerja Spesialis Tur|スペシャリスト実績
 Clients By Country|Pelanggan Berdasarkan Country|国別顧客数
 No clients yet.|Belum ada pelanggan.|顧客はまだいません。
-New Prospect|Prospek Baru|新規リード
-prospect|Prospek|リード
+New Prospect|New Prospect|新規リード
+prospect|Prospect|リード
 Offer|Penawaran|見積
 Negotiations|Negosiasi|交渉
 Confirmed|Terkonfirmasi|確定
