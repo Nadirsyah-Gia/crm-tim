@@ -293,7 +293,7 @@ function home(){
 function perf(){
   return `<div class="panel"><h2>Tour specialist performance</h2>
   <div class="wrap" style="border:0"><table style="min-width:420px">
-  <thead><tr><th>Person Responsible</th><th>prospect</th><th>Booking</th><th>Pendapatan</th></tr></thead>
+  <thead><tr><th>Person Responsible</th><th>Prospect</th><th>Booking</th><th>Income</th></tr></thead>
   <tbody>${SP.map((n,i)=>{
     const l=D.filter(x=>x.sp===i),c=l.filter(x=>x.t>=3);
     return `<tr style="cursor:default">
