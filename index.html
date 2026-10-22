@@ -427,8 +427,7 @@ $('#auth').innerHTML=`<div class='acard'><h1>Pesisir CRM</h1><p style='margin:2p
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const fail=e=>{console.error(e);const b=document.createElement('div');b.style.cssText='position:fixed;left:12px;right:12px;bottom:84px;background:#b8344f;color:#fff;padding:12px;border-radius:10px;z-index:99';b.textContent=e.message;document.body.append(b);setTimeout(()=>b.remove(),6000)};
 
-let SP = [];
-let PF = [];
+
 let SP_BY_NAME = new Map();
 
 const toD = r => {
