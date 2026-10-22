@@ -454,12 +454,12 @@ Japan: Kyoto–Osaka 6D5N|Jepang: Kyoto–Osaka 6 Hari 5 Malam|日本：京都�
 Japan: Hokkaido Snow 6D5N|Jepang: Snow Hokkaido 6 Hari 5 Malam|日本：北海道の雪 5泊6日
 Japan: Sakura 7D6N|Jepang: Sakura 7 Hari 6 Malam|日本：桜 6泊7日
 Submit to CRM|Submit ke Japan Tours CRM|Japan Tours CRMにログイン
-Buat Account baru|Buat Account Baru|新規アカウント作成
+Create New Account|Create New Account|新規アカウント作成
 Name lengkap|Name Lengkap|氏名
 ID (email)|ID (Email)|ID（メール）
 Email|Email|メール
 Password|Password|パスワード
-Konfirmasi password|Konfirmasi Password|パスワード（確認）
+Confirm password|Confirm password|パスワード（確認）
 Show password|Show Password|パスワードを表示
 Hide password|Hide Password|パスワードを非表示
 Show|Show|表示
@@ -467,13 +467,13 @@ Hide|Hide|非表示
 Submit|Submit|ログイン
 Sign Up|Sign Up|新規登録
 Don't have an account yet?|Don't have an account yet?|アカウントをお持ちでない方
-Sudah punya Account?|Sudah Punya Account?|アカウントをお持ちの方
-Kode undangan tim|Kode Undangan Tim|チーム招待コード
+Already have an account?|Already have an account?|アカウントをお持ちの方
+Team invitation code|Team invitation code|チーム招待コード
 Kode undangan salah.|Kode undangan salah.|招待コードが正しくありません。
 Isi semua kolom.|Harap isi semua kolom.|すべての項目を入力してください。
 Format email tidak valid.|Format email tidak valid.|メールの形式が正しくありません。
 Password minimal 6 karakter.|Password minimal 6 karakter.|パスワードは6文字以上にしてください。
-Konfirmasi password tidak sama.|Konfirmasi Password tidak cocok.|パスワードが一致しません。
+Confirm password tidak sama.|Confirm password tidak cocok.|パスワードが一致しません。
 Email sudah terSign Up.|Email sudah terSign Up.|このメールは登録済みです。
 ID atau password salah.|ID atau Password salah.|IDまたはパスワードが違います。
 Account berhasil dibuat. Silakan Submit dengan email Anda.|Account berhasil dibuat. Silakan Submit menggunakan email Anda.|アカウントを作成しました。メールでログインしてください。`;
@@ -492,7 +492,7 @@ const sUS=a=>{try{localStorage.setItem('Japan Tours-users',JSON.stringify(a))}ca
 const hs=async(s,p)=>{try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(unescape(encodeURIComponent(s+p)))}};
 const INV='Japan2026';let SES=null;
 function showAuth(mode,msg,em){const su=mode==='up';
-$('#auth').innerHTML=`<div class='acard'><h1>Japan Tours CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Buat Account baru':'Submit to CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Name lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Show password'>Show</button></div>${su?`<label for='ac'>Konfirmasi password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Kode undangan tim</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Sign Up':'Submit'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Sudah punya Account?':'Don't have an account yet?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Submit':'Sign Up'}</button></p></div>`;tr($('#auth'))}
+$('#auth').innerHTML=`<div class='acard'><h1>Japan Tours CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Create New Account':'Submit to CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Name lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Show password'>Show</button></div>${su?`<label for='ac'>Confirm password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Team invitation code</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Sign Up':'Submit'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Already have an account?':'Don't have an account yet?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Submit':'Sign Up'}</button></p></div>`;tr($('#auth'))}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const fail=e=>{console.error(e);const b=document.createElement('div');b.style.cssText='position:fixed;left:12px;right:12px;bottom:84px;background:#b8344f;color:#fff;padding:12px;border-radius:10px;z-index:99';b.textContent=e.message;document.body.append(b);setTimeout(()=>b.remove(),6000)};
 
@@ -582,7 +582,7 @@ document.addEventListener('submit',async e=>{
  try{
   if(su){
    if(p.length<6)return err('Password minimal 6 karakter.');
-   if(p!==$('#ac').value)return err('Konfirmasi password tidak sama.');
+   if(p!==$('#ac').value)return err('Confirm password tidak sama.');
    holdAuth=true;
    const r=await sb.auth.signUp({email:em,password:p,options:{data:{Name:$('#an').value.trim(),kode:$('#ak').value.trim()}}});
    if(r.error){holdAuth=false;const m=r.error.message||'';return err(/already|registered/i.test(m)?'Email sudah terSign Up.':/database error|kode/i.test(m)?'Kode undangan salah.':m)}
