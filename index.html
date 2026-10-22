@@ -495,15 +495,15 @@ async function loadAll() {
     return fail({ message: 'Daftar penanggung jawab masih kosong.' });
   }
 
-  $('#sp').innerHTML = SP.map((nama, i) =>
-    `<option value="${i}">${esc(nama)}</option>`
-  ).join('');
+  $('#sp').innerHTML = SP
+    .map((nama, i) => `<option value="${i}">${esc(nama)}</option>`)
+    .join('');
 
   D = prospectsRes.data.map(toD);
   render();
 }
- 
-let holdAuth=false,live=false;
+
+let holdAuth = false, live = false;
 document.addEventListener('submit',async e=>{
  if(e.target.id!=='af')return;e.preventDefault();
  const su=!!$('#an'),em=$('#ae').value.trim().toLowerCase(),p=$('#ap').value,err=t=>{const x=$('#aerr');x.className='err';x.textContent=t;tr(x)};
