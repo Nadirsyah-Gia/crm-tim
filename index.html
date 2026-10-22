@@ -545,7 +545,7 @@ const toR = o => ({
 async function loadAll() {
   const [profilesRes, namesRes, prospectsRes] = await Promise.all([
     sb.from('profiles').select('id,Name,role').order('Name'),
-    sb.from('Sign Up_person_in_charge')
+    sb.from('Person_In_Charge')
       .select('id,Name')
       .eq('aktif', true)
       .order('Name'),
