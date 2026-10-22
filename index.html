@@ -220,7 +220,20 @@ function home(){
  <div class="panel"><h2>Tindak lanjut terdekat</h2>${fu.length?fu.map(x=>`<div class="fu" data-id="${x.id}"><div>${esc(x.n)}<small>${esc(PK[x.p].n)} · ${ST[x.t]}</small></div><span class="${x.f<today?'late':''}">${x.f<today?'Terlambat · ':''}${dt(x.f)}</span></div>`).join(''):'<p class="empty">Tidak ada jadwal tindak lanjut.</p>'}</div>${perf()}${ctry()}
  </div>`;
 }
-function perf(){return `<div class="panel"><h2>Kinerja tour specialist</h2><div class="wrap" style="border:0"><table style="min-width:420px"><thead><tr><th>Specialist</th><th>Prospek</th><th>Booking</th><th>Pendapatan</th></tr></thead><tbody>${SP.map((n,i)=>{const l=D.filter(x=>x.sp===i),c=l.filter(x=>x.t>=3);return `<tr style="cursor:default"><td>${n}</td><td>${l.length}</td><td>${c.length}</td><td>${jt(c.reduce((a,x)=>a+(+x.v||0),0))}</td></tr>`}).join('')}</tbody></table></div></div>`}
+
+function perf(){
+  return `<div class="panel"><h2>Kinerja tour specialist</h2>
+  <div class="wrap" style="border:0"><table style="min-width:420px">
+  <thead><tr><th>Penanggung jawab</th><th>Prospek</th><th>Booking</th><th>Pendapatan</th></tr></thead>
+  <tbody>${SP.map((n,i)=>{
+    const l=D.filter(x=>x.sp===i),c=l.filter(x=>x.t>=3);
+    return `<tr style="cursor:default">
+      <td>${esc(n)}</td><td>${l.length}</td><td>${c.length}</td>
+      <td>${jt(c.reduce((a,x)=>a+(+x.v||0),0))}</td>
+    </tr>`;
+  }).join('')}</tbody></table></div></div>`;
+}
+
 function ctry(){const c={};D.forEach(x=>c[x.k]=(c[x.k]||0)+1);const r=Object.entries(c).sort((a,b)=>b[1]-a[1]);const m=r.length?r[0][1]:1;return `<div class="panel"><h2>Klien per negara</h2>${r.map(([k,n])=>`<div class="bar"><span>${CT[k]}</span><span><i style="width:${n/m*100}%"></i></span><em>${n}</em></div>`).join('')||'<p class="empty">Belum ada klien.</p>'}</div>`}
 function card(x){
  const wa='https://wa.me/'+String(x.w||'').replace(/\D/g,'').replace(/^0/,'62');
@@ -253,7 +266,11 @@ $('#p').innerHTML=PK.map((k,i)=>`<option value="${i}">${k.n}</option>`).join('')
 $('#s').innerHTML=SRC.map((k,i)=>`<option value="${i}">${k}</option>`).join('');
 $('#k').innerHTML=CT.map((k,i)=>`<option value="${i}">${k}</option>`).join('');$('#sp').innerHTML=SP.map((k,i)=>`<option value="${i}">${k}</option>`).join('');$('#t').innerHTML=ST.map((k,i)=>`<option value="${i}">${k}</option>`).join('');
 function open(id){
- eid=id;const x=D.find(y=>y.id===id)||{n:'',w:'',p:0,s:0,k:0,sp:Math.max(0,PF.findIndex(f=>SES&&f.id===SES.id)),x:2,v:'',d:'',f:'',t:0,c:''};
+ eid=id;const x = D.find(y => y.id === id) || {
+  n: '', w: '', p: 0, s: 0, k: 0,
+  sp: Math.max(0, SP_BY_NAME.get('Admin') ?? 0),
+  x: 2, v: '', d: '', f: '', t: 0, c: ''
+};
  $('#dt').textContent=id?'Ubah data pelanggan':'Prospek baru';
  $('#del').style.display=id?'':'none';$('#del').textContent='Hapus';delete $('#del').dataset.s;
  for(const[k,f]of Object.entries({n:'n',w:'w',p:'p',s:'s',k:'k',sp:'sp',x:'x',v:'v',d:'d',f:'f',t:'t',c:'c'}))$('#'+f).value=x[k];
@@ -409,14 +426,84 @@ function showAuth(mode,msg,em){const su=mode==='up';
 $('#auth').innerHTML=`<div class='acard'><h1>Pesisir CRM</h1><p style='margin:2px 0 6px;color:var(--mut)'>${su?'Buat akun baru':'Masuk ke CRM'}</p><form id='af' novalidate>${su?`<label for='an'>Nama lengkap</label><input id='an' autocomplete='name'>`:''}<label for='ae'>${su?'Email':'ID (email)'}</label><input id='ae' type='email' inputmode='email' autocomplete='username' autocapitalize='none' value='${esc(em||'')}'><label for='ap'>Password</label><div class='pw'><input id='ap' type='password' autocomplete='${su?'new-password':'current-password'}'><button type='button' class='eye' aria-label='Tampilkan password'>Tampilkan</button></div>${su?`<label for='ac'>Konfirmasi password</label><div class='pw'><input id='ac' type='password' autocomplete='new-password'></div><label for='ak'>Kode undangan tim</label><input id='ak' autocomplete='off' autocapitalize='characters'>`:''}<div class='err${msg?' okm':''}' id='aerr' role='alert'>${msg||''}</div><button class='btn' type='submit'>${su?'Daftar':'Masuk'}</button></form><p style='text-align:center;margin:12px 0 0;color:var(--mut)'>${su?'Sudah punya akun?':'Belum punya akun?'} <button class='lnk' data-auth='${su?'in':'up'}'>${su?'Masuk':'Daftar'}</button></p></div>`;tr($('#auth'))}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const fail=e=>{console.error(e);const b=document.createElement('div');b.style.cssText='position:fixed;left:12px;right:12px;bottom:84px;background:#b8344f;color:#fff;padding:12px;border-radius:10px;z-index:99';b.textContent=e.message;document.body.append(b);setTimeout(()=>b.remove(),6000)};
-const toD=r=>({id:r.id,n:r.nama,w:r.whatsapp||'',p:r.paket,s:r.sumber??0,k:r.negara??0,sp:Math.max(0,PF.findIndex(f=>f.id===r.specialist)),x:r.peserta,v:r.nilai,d:r.berangkat||'',f:r.tindak_lanjut||'',t:r.tahap,c:r.catatan||''});
-const toR=o=>({nama:o.n,whatsapp:o.w,paket:o.p,sumber:o.s,negara:o.k,peserta:o.x,nilai:o.v,berangkat:o.d||null,tindak_lanjut:o.f||null,tahap:o.t,catatan:o.c,specialist:PF[o.sp]?PF[o.sp].id:SES.id});
-async function loadAll(){
- const a=await sb.from('profiles').select('id,nama').order('nama');if(a.error)return fail(a.error);
- PF=a.data;SP=PF.map(f=>f.nama);
- $('#sp').innerHTML=SP.map((k,i)=>`<option value="${i}">${esc(k)}</option>`).join('');
- const b=await sb.from('prospek').select('*').order('dibuat',{ascending:false});if(b.error)return fail(b.error);
- D=b.data.map(toD);render();
+
+let SP = [];
+let PF = [];
+let SP_BY_NAME = new Map();
+
+const toD = r => {
+  const nama = r.penanggung_jawab_nama
+    || PF.find(f => f.id === r.specialist)?.nama
+    || 'Admin';
+
+  let idx = SP.findIndex(n => n === nama);
+  if (idx < 0) idx = 0;
+
+  return {
+    id: r.id,
+    n: r.nama,
+    w: r.whatsapp || '',
+    p: r.paket,
+    s: r.sumber ?? 0,
+    k: r.negara ?? 0,
+    sp: idx,
+    x: r.peserta,
+    v: r.nilai,
+    d: r.berangkat || '',
+    f: r.tindak_lanjut || '',
+    t: r.tahap,
+    c: r.catatan || ''
+  };
+};
+
+const toR = o => ({
+  nama: o.n,
+  whatsapp: o.w,
+  paket: o.p,
+  sumber: o.s,
+  negara: o.k,
+  peserta: o.x,
+  nilai: o.v,
+  berangkat: o.d || null,
+  tindak_lanjut: o.f || null,
+  tahap: o.t,
+  catatan: o.c,
+  // Tetap gunakan UUID akun login untuk menjaga foreign key.
+  specialist: SES.id,
+  // Simpan nama penanggung jawab yang dipilih di dropdown.
+  penanggung_jawab_nama: SP[o.sp] || 'Admin'
+});
+
+async function loadAll() {
+  const [profilesRes, namesRes, prospectsRes] = await Promise.all([
+    sb.from('profiles').select('id,nama,role').order('nama'),
+    sb.from('daftar_penanggung_jawab')
+      .select('id,nama')
+      .eq('aktif', true)
+      .order('nama'),
+    sb.from('prospek').select('*').order('dibuat', { ascending: false })
+  ]);
+
+  if (profilesRes.error) return fail(profilesRes.error);
+  if (namesRes.error) return fail(namesRes.error);
+  if (prospectsRes.error) return fail(prospectsRes.error);
+
+  PF = profilesRes.data || [];
+  SP = (namesRes.data || []).map(x => x.nama);
+  SP_BY_NAME = new Map(SP.map((nama, i) => [nama, i]));
+
+  if (!SP.length) {
+    return fail({ message: 'Daftar penanggung jawab masih kosong.' });
+  }
+
+  $('#sp').innerHTML = SP.map((nama, i) =>
+    `<option value="${i}">${esc(nama)}</option>`
+  ).join('');
+
+  D = prospectsRes.data.map(toD);
+  render();
+}
+
 }
 let holdAuth=false,live=false;
 document.addEventListener('submit',async e=>{
